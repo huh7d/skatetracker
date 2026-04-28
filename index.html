@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKATE TRACKER</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #1a1a1a;
+  --accent: #f5ff00;
+  --accent2: #ff6b00;
+  --accent3: #00ffcc;
+  --text: #f0f0f0;
+  --text2: #888;
+  --border: #2a2a2a;
+  --can: #f5ff00;
+  --fav: #ff6b00;
+  --dream: #00ffcc;
+  --red: #ff3333;
+  --owned: #f5ff00;
+  --owning: #ff6b00;
+  --sketchy: #ff3333;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+#splash h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,15vw,140px);letter-spacing:8px;color:var(--accent);text-shadow:4px 4px 0 var(--accent2);line-height:1}
+#splash p{color:var(--text2);font-size:12px;letter-spacing:4px;text-transform:uppercase}
+#splash input{background:transparent;border:none;border-bottom:2px solid var(--accent);color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:4px;text-align:center;outline:none;width:300px;padding:8px 0}
+#splash input::placeholder{color:var(--text2)}
+#splash button{background:var(--accent);color:#000;font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;border:none;padding:12px 48px;cursor:pointer;transition:.2s;margin-top:8px}
+#splash button:hover{background:var(--accent2);transform:scale(1.05)}
+
+/* APP */
+#app{display:none;flex-direction:column;min-height:100vh}
+#app.active{display:flex}
+
+/* TOP BAR */
+#topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+#topbar .logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;color:var(--accent)}
+#nickname-btn{background:none;border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:12px;padding:6px 14px;cursor:pointer;transition:.2s;letter-spacing:2px}
+#nickname-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* NAV */
+#nav{background:var(--bg2);border-bottom:2px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:56px;z-index:99}
+#nav::-webkit-scrollbar{display:none}
+.nav-btn{background:none;border:none;color:var(--text2);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;padding:14px 20px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:.2s}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* SECTIONS */
+.section{display:none;padding:24px 20px;max-width:900px;margin:0 auto;width:100%}
+.section.active{display:block}
+
+/* SECTION TITLE */
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:4px;color:var(--accent);margin-bottom:4px}
+.sec-sub{color:var(--text2);font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:28px}
+
+/* STATS BAR */
+#stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);padding:16px;text-align:center;cursor:pointer;transition:.2s}
+.stat-card:hover{border-color:var(--text2)}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1}
+.stat-label{font-size:10px;letter-spacing:2px;color:var(--text2);margin-top:4px}
+.stat-card.can .stat-num{color:var(--can)}
+.stat-card.fav .stat-num{color:var(--fav)}
+.stat-card.dream .stat-num{color:var(--dream)}
+
+/* TRICK OVERVIEW MODAL */
+.overview-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:600;overflow-y:auto}
+.overview-modal.open{display:block}
+.overview-inner{max-width:800px;margin:0 auto;padding:24px 20px}
+.overview-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;position:sticky;top:0;background:rgba(10,10,10,.95);padding:16px 0;z-index:1}
+.overview-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:4px}
+.overview-title.can{color:var(--can)}
+.overview-title.fav{color:var(--fav)}
+.overview-title.dream{color:var(--dream)}
+.overview-close{background:none;border:1px solid var(--border);color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;padding:8px 20px;cursor:pointer}
+.overview-close:hover{border-color:var(--red);color:var(--red)}
+.overview-list{display:flex;flex-direction:column;gap:8px}
+.overview-item{background:var(--bg2);border:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.overview-trick-name{font-size:13px;letter-spacing:1px;flex:1}
+.overview-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.status-badge{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;padding:4px 10px;border:1px solid;cursor:pointer;transition:.15s}
+.status-badge.owned{border-color:var(--owned);color:var(--owned)}
+.status-badge.owned.active{background:var(--owned);color:#000}
+.status-badge.owning{border-color:var(--owning);color:var(--owning)}
+.status-badge.owning.active{background:var(--owning);color:#fff}
+.status-badge.sketchy{border-color:var(--sketchy);color:var(--sketchy)}
+.status-badge.sketchy.active{background:var(--sketchy);color:#fff}
+.practice-btn{background:none;border:1px solid var(--accent3);color:var(--accent3);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;padding:4px 12px;cursor:pointer;transition:.15s}
+.practice-btn:hover{background:var(--accent3);color:#000}
+
+/* PRACTICE MODE MODAL */
+.practice-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:700;align-items:center;justify-content:center}
+.practice-modal.open{display:flex}
+.practice-inner{background:var(--bg2);border:1px solid var(--accent);padding:32px;max-width:440px;width:90%;text-align:center}
+.practice-trick-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(24px,6vw,48px);letter-spacing:4px;color:var(--accent);line-height:1;margin-bottom:20px}
+.practice-score{display:flex;justify-content:center;gap:32px;margin-bottom:24px}
+.practice-num{font-family:'Bebas Neue',sans-serif;font-size:56px;line-height:1}
+.practice-num.land{color:var(--can)}
+.practice-num.bail{color:var(--red)}
+.practice-score-label{font-size:10px;letter-spacing:2px;color:var(--text2);margin-top:4px}
+.practice-dots{display:flex;justify-content:center;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.practice-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);transition:.2s}
+.practice-dot.land{background:var(--can);border-color:var(--can)}
+.practice-dot.bail{background:var(--red);border-color:var(--red)}
+.practice-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.pland-btn,.pbail-btn{border:none;font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;padding:18px;cursor:pointer;transition:.15s}
+.pland-btn{background:var(--accent);color:#000}
+.pland-btn:hover{transform:scale(1.03)}
+.pbail-btn{background:var(--red);color:#fff}
+.pbail-btn:hover{transform:scale(1.03)}
+.practice-progress{font-size:11px;letter-spacing:3px;color:var(--text2);margin-bottom:16px}
+.practice-result{display:none;padding:16px;margin-bottom:16px}
+.practice-result-text{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:4px;margin-bottom:8px}
+.practice-result-sub{font-size:11px;letter-spacing:2px;color:var(--text2)}
+.practice-close{background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;padding:10px 24px;cursor:pointer;width:100%}
+.practice-close:hover{border-color:var(--text);color:var(--text)}
+
+/* CATEGORY TABS */
+.cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.cat-tab{background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;padding:8px 16px;cursor:pointer;transition:.2s;text-transform:uppercase}
+.cat-tab:hover{border-color:var(--text2);color:var(--text)}
+.cat-tab.active{background:var(--accent);border-color:var(--accent);color:#000}
+
+/* TRICK LIST */
+.trick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.trick-card{background:var(--bg2);border:1px solid var(--border);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;transition:.15s;position:relative;overflow:hidden}
+.trick-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:.2s}
+.trick-card.can-do::before{background:var(--can)}
+.trick-card.favorite::before{background:var(--fav)}
+.trick-card.dream-trick::before{background:var(--dream)}
+.trick-name{font-size:12px;letter-spacing:1px;flex:1}
+.trick-icons{display:flex;gap:4px;align-items:center}
+.icon-btn{background:none;border:1px solid var(--border);width:28px;height:28px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
+.icon-btn:hover{border-color:var(--text2)}
+.icon-btn.can-active{background:var(--can);border-color:var(--can);color:#000}
+.icon-btn.fav-active{background:var(--fav);border-color:var(--fav);color:#000}
+.icon-btn.dream-active{background:var(--dream);border-color:var(--dream);color:#000}
+.icon-btn:disabled{opacity:.3;cursor:not-allowed}
+
+/* FLAT SUBSECTION */
+.flat-section{margin-bottom:16px}
+.flat-label{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--accent2);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+
+/* GRIND SUBSECTION */
+.grind-section{margin-bottom:16px}
+.grind-label{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--accent2);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+
+/* LINE GENERATOR */
+.line-controls{display:flex;flex-direction:column;gap:16px;margin-bottom:28px}
+.ctrl-group{background:var(--bg2);border:1px solid var(--border);padding:20px}
+.ctrl-label{font-size:11px;letter-spacing:3px;color:var(--text2);text-transform:uppercase;margin-bottom:12px}
+.btn-group{display:flex;flex-wrap:wrap;gap:8px}
+.sel-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;padding:10px 20px;cursor:pointer;transition:.15s}
+.sel-btn:hover{border-color:var(--text2);color:var(--text)}
+.sel-btn.selected{background:var(--accent);border-color:var(--accent);color:#000}
+.num-btns .sel-btn{width:52px;text-align:center}
+.generate-btn{background:var(--accent);border:none;color:#000;font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;padding:16px 48px;cursor:pointer;width:100%;transition:.15s}
+.generate-btn:hover{background:var(--accent2);transform:translateY(-2px)}
+.generate-btn:active{transform:translateY(0)}
+
+/* LINE RESULT */
+#line-result{display:none}
+.line-cards{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+.line-trick-card{background:var(--bg2);border:2px solid var(--accent);padding:20px 16px;text-align:center;min-width:130px;flex:1;max-width:200px;animation:slideIn .3s ease both}
+.line-trick-card .num{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--accent);line-height:1}
+.line-trick-card .tname{font-size:11px;letter-spacing:1px;margin-top:4px;color:var(--text2)}
+.line-trick-card .tname strong{color:var(--text);display:block;font-size:13px;margin-top:2px;letter-spacing:0}
+@keyframes slideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.regen-btn{background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;padding:10px 32px;cursor:pointer;transition:.2s;display:block;margin:0 auto}
+.regen-btn:hover{background:var(--accent);color:#000}
+
+/* GAME OF SKATE */
+.game-setup{display:flex;flex-direction:column;gap:16px}
+.game-setup .ctrl-group{background:var(--bg2);border:1px solid var(--border);padding:20px}
+.start-game-btn{background:var(--accent2);border:none;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:4px;padding:18px;cursor:pointer;width:100%;transition:.2s}
+.start-game-btn:hover{background:var(--fav);transform:translateY(-2px)}
+
+#game-play{display:none}
+.game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:gap}
+.skate-letters{display:flex;gap:8px;justify-content:center;margin-bottom:24px}
+.skate-letter{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,8vw,56px);width:clamp(44px,12vw,72px);height:clamp(44px,12vw,72px);display:flex;align-items:center;justify-content:center;border:2px solid var(--border);color:var(--border);transition:.4s;position:relative}
+.skate-letter.got{border-color:var(--red);color:var(--red);text-shadow:0 0 20px var(--red);animation:letterPop .3s ease}
+.skate-letter.e-half{border-color:var(--accent2);color:var(--accent2)}
+@keyframes letterPop{0%{transform:scale(1.4)}100%{transform:scale(1)}}
+.player-turn{text-align:center;margin-bottom:16px}
+.player-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--accent)}
+.turn-sub{font-size:11px;letter-spacing:3px;color:var(--text2);margin-top:2px}
+.current-trick-box{background:var(--bg2);border:2px solid var(--accent);padding:32px;text-align:center;margin-bottom:24px}
+.current-trick-label{font-size:11px;letter-spacing:3px;color:var(--text2);margin-bottom:8px}
+.current-trick-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,56px);letter-spacing:4px;color:var(--accent);line-height:1}
+.game-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.land-btn,.bail-btn{border:none;font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:4px;padding:20px;cursor:pointer;transition:.15s}
+.land-btn{background:var(--accent);color:#000}
+.land-btn:hover{transform:scale(1.03)}
+.bail-btn{background:var(--red);color:#fff}
+.bail-btn:hover{transform:scale(1.03)}
+.skip-trick-btn{background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Space Mono',monospace;font-size:11px;padding:8px;cursor:pointer;width:100%;letter-spacing:2px}
+.skip-trick-btn:hover{border-color:var(--text2);color:var(--text)}
+.game-over-screen{text-align:center;padding:40px 20px;display:none}
+.game-over-title{font-family:'Bebas Neue',sans-serif;font-size:80px;letter-spacing:6px;color:var(--red);line-height:1}
+.game-over-winner{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:4px;color:var(--accent);margin:12px 0}
+.restart-btn{background:var(--accent);border:none;color:#000;font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;padding:14px 40px;cursor:pointer;margin-top:24px}
+
+/* PROFILE */
+#profile-section .pro-header{display:flex;align-items:center;gap:20px;margin-bottom:32px}
+.pro-avatar{width:80px;height:80px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:40px;color:#000;flex-shrink:0}
+.pro-name{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:4px;color:var(--accent);line-height:1}
+.pro-edit{background:none;border:1px solid var(--border);color:var(--text2);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;padding:4px 10px;cursor:pointer;margin-top:6px}
+.pro-edit:hover{border-color:var(--accent);color:var(--accent)}
+.progress-bars{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+.prog-row{display:flex;align-items:center;gap:12px}
+.prog-label{font-size:11px;letter-spacing:2px;color:var(--text2);width:120px;flex-shrink:0}
+.prog-bar{flex:1;height:6px;background:var(--border)}
+.prog-fill{height:100%;background:var(--accent);transition:.6s}
+.prog-pct{font-size:11px;color:var(--text2);width:40px;text-align:right}
+.trick-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.pill{font-size:11px;letter-spacing:1px;padding:4px 10px;border:1px solid;font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.pill.fav{border-color:var(--fav);color:var(--fav)}
+.pill.dream{border-color:var(--dream);color:var(--dream)}
+.pro-section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;margin-bottom:10px}
+.pro-section-title.fav{color:var(--fav)}
+.pro-section-title.dream{color:var(--dream)}
+
+/* LEADERBOARD */
+.lb-actions{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.lb-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;padding:10px 16px;cursor:pointer;transition:.2s}
+.lb-btn:hover{border-color:var(--accent);color:var(--accent)}
+.lb-sort{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.sort-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:10px;letter-spacing:2px;padding:6px 12px;cursor:pointer;transition:.2s}
+.sort-btn:hover{border-color:var(--text2);color:var(--text)}
+.sort-btn.active{border-color:var(--accent);color:var(--accent)}
+.lb-table{width:100%;border-collapse:collapse}
+.lb-table th{text-align:left;font-size:10px;letter-spacing:3px;color:var(--text2);padding:8px 12px;border-bottom:1px solid var(--border)}
+.lb-table td{padding:12px;border-bottom:1px solid var(--border);font-size:12px}
+.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--border)}
+.lb-rank.r1{color:var(--accent)}
+.lb-rank.r2{color:#aaa}
+.lb-rank.r3{color:#cd7f32}
+.lb-name{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:1px}
+.lb-name.me{color:var(--accent)}
+.lb-num{font-family:'Bebas Neue',sans-serif;font-size:22px}
+.lb-num.can{color:var(--can)}
+.lb-num.fav{color:var(--fav)}
+.lb-num.dream{color:var(--dream)}
+.import-area{background:var(--bg2);border:1px solid var(--border);padding:16px;margin-top:16px;display:none}
+.import-area textarea{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:11px;width:100%;padding:10px;resize:vertical;min-height:100px;outline:none}
+.import-submit{background:var(--accent3);border:none;color:#000;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;padding:10px 24px;cursor:pointer;margin-top:10px}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--accent);padding:32px;min-width:280px;max-width:400px;width:90%}
+.modal-box h3{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--accent);margin-bottom:16px}
+.modal-box input{background:transparent;border:none;border-bottom:2px solid var(--accent);color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:28px;width:100%;padding:6px 0;outline:none;letter-spacing:2px;margin-bottom:16px}
+.modal-btns{display:flex;gap:10px}
+.modal-btns button{flex:1;border:none;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;padding:12px;cursor:pointer}
+.modal-ok{background:var(--accent);color:#000}
+.modal-cancel{background:var(--bg3);color:var(--text2);border:1px solid var(--border) !important}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--accent);color:#000;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;padding:12px 20px;transform:translateY(80px);opacity:0;transition:.3s;z-index:9998}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:48px;color:var(--text2)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty p{font-size:12px;letter-spacing:2px}
+
+@media(max-width:480px){
+  .trick-grid{grid-template-columns:1fr}
+  .cat-tabs{gap:6px}
+  .cat-tab{font-size:11px;padding:6px 10px}
+  .game-btns{grid-template-columns:1fr}
+  #stats-bar{grid-template-columns:repeat(3,1fr)}
+  .stat-num{font-size:28px}
+  .line-cards{gap:8px}
+  .line-trick-card{min-width:100px}
+  .overview-item{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div style="text-align:center">
+    <h1>SKATE<br>TRACKER</h1>
+    <p>track your tricks. build your lines.</p>
+  </div>
+  <div style="text-align:center">
+    <p style="font-size:11px;letter-spacing:3px;color:var(--text2);margin-bottom:8px">ENTER YOUR TAG</p>
+    <input id="splash-input" type="text" placeholder="NICKNAME" maxlength="16" autocomplete="off">
+  </div>
+  <button id="splash-btn">DROP IN →</button>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div id="topbar">
+    <div class="logo">SKATE TRACKER</div>
+    <button id="nickname-btn">👤 <span id="nav-nick"></span></button>
+  </div>
+  <nav id="nav">
+    <button class="nav-btn active" data-tab="tricks">TRICK LIST</button>
+    <button class="nav-btn" data-tab="lines">LINE GEN</button>
+    <button class="nav-btn" data-tab="game">GAME OF SKATE</button>
+    <button class="nav-btn" data-tab="profile">PROFILE</button>
+    <button class="nav-btn" data-tab="leaderboard">LEADERBOARD</button>
+  </nav>
+
+  <!-- TRICK LIST SECTION -->
+  <div id="tricks-section" class="section active">
+    <div class="sec-title">TRICK LIST</div>
+    <div class="sec-sub">SELECT YOUR TRICKS — CAN DO / FAVORITE / DREAM</div>
+    <div id="stats-bar">
+      <div class="stat-card can" id="stat-can-card" title="클릭해서 목록 보기"><div class="stat-num" id="stat-can">0</div><div class="stat-label">✅ CAN DO</div></div>
+      <div class="stat-card fav" id="stat-fav-card" title="클릭해서 목록 보기"><div class="stat-num" id="stat-fav">0</div><div class="stat-label">⭐ FAVORITE</div></div>
+      <div class="stat-card dream" id="stat-dream-card" title="클릭해서 목록 보기"><div class="stat-num" id="stat-dream">0</div><div class="stat-label">💭 DREAM</div></div>
+    </div>
+    <div class="cat-tabs" id="cat-tabs">
+      <button class="cat-tab active" data-cat="flat">FLAT</button>
+      <button class="cat-tab" data-cat="grind">GRIND &amp; SLIDE</button>
+      <button class="cat-tab" data-cat="grab">GRAB &amp; AIR</button>
+      <button class="cat-tab" data-cat="ramp">RAMP</button>
+      <button class="cat-tab" data-cat="misc">MISC</button>
+    </div>
+    <div id="trick-container"></div>
+  </div>
+
+  <!-- LINE GENERATOR SECTION -->
+  <div id="lines-section" class="section">
+    <div class="sec-title">LINE GEN</div>
+    <div class="sec-sub">BUILD YOUR PERFECT LINE</div>
+    <div class="line-controls">
+      <div class="ctrl-group">
+        <div class="ctrl-label">TRICK COUNT</div>
+        <div class="btn-group num-btns" id="num-btns">
+          <button class="sel-btn selected" data-val="2">2</button>
+          <button class="sel-btn" data-val="3">3</button>
+          <button class="sel-btn" data-val="4">4</button>
+          <button class="sel-btn" data-val="5">5</button>
+          <button class="sel-btn" data-val="6">6</button>
+          <button class="sel-btn" data-val="7">7</button>
+          <button class="sel-btn" data-val="8">8</button>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">TRICK POOL</div>
+        <div class="btn-group" id="pool-btns">
+          <button class="sel-btn selected" data-val="can">ALL CAN DO</button>
+          <button class="sel-btn" data-val="fav">FAVORITES ONLY</button>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">INCLUDE GRINDS / SLIDES?</div>
+        <div class="btn-group" id="grind-btns">
+          <button class="sel-btn selected" data-val="all">ALL TRICKS</button>
+          <button class="sel-btn" data-val="flat">FLAT ONLY</button>
+        </div>
+      </div>
+    </div>
+    <button class="generate-btn" id="gen-btn">GENERATE LINE</button>
+    <div id="line-result">
+      <div id="line-cards" class="line-cards"></div>
+      <button class="regen-btn" id="regen-btn">↺ REGENERATE</button>
+    </div>
+  </div>
+
+  <!-- GAME OF SKATE SECTION -->
+  <div id="game-section" class="section">
+    <div class="sec-title">GAME OF SKATE</div>
+    <div class="sec-sub">LAND IT OR SPELL IT OUT</div>
+    <div id="game-setup-panel">
+      <div class="game-setup">
+        <div class="ctrl-group">
+          <div class="ctrl-label">PLAYERS</div>
+          <div class="btn-group" id="gplayer-btns">
+            <button class="sel-btn selected" data-val="1">SOLO PRACTICE</button>
+            <button class="sel-btn" data-val="2">2 PLAYERS</button>
+          </div>
+        </div>
+        <div class="ctrl-group" id="p2-name-group" style="display:none">
+          <div class="ctrl-label">OPPONENT NICKNAME</div>
+          <input id="p2-input" type="text" placeholder="OPPONENT" maxlength="16" style="background:transparent;border:none;border-bottom:1px solid var(--accent);color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;outline:none;width:100%;padding:4px 0">
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">TRICK POOL</div>
+          <div class="btn-group" id="gpool-btns">
+            <button class="sel-btn selected" data-val="can">ALL CAN DO</button>
+            <button class="sel-btn" data-val="fav">FAVORITES ONLY</button>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">INCLUDE GRINDS / SLIDES?</div>
+          <div class="btn-group" id="ggrind-btns">
+            <button class="sel-btn selected" data-val="all">ALL TRICKS</button>
+            <button class="sel-btn" data-val="flat">FLAT ONLY</button>
+          </div>
+        </div>
+        <button class="start-game-btn" id="start-game-btn">START GAME →</button>
+      </div>
+    </div>
+    <div id="game-play">
+      <div class="player-turn" id="player-turn-div">
+        <div class="player-name" id="current-player-name"></div>
+        <div class="turn-sub">YOUR TURN</div>
+      </div>
+      <div style="margin-bottom:20px">
+        <div id="p1-letters-label" style="font-size:10px;letter-spacing:3px;color:var(--text2);text-align:center;margin-bottom:4px"></div>
+        <div class="skate-letters" id="p1-letters"></div>
+        <div id="p2-letters-label" style="font-size:10px;letter-spacing:3px;color:var(--text2);text-align:center;margin-bottom:4px;display:none"></div>
+        <div class="skate-letters" id="p2-letters" style="display:none"></div>
+      </div>
+      <div class="current-trick-box">
+        <div class="current-trick-label">TRICK TO LAND</div>
+        <div class="current-trick-name" id="current-trick-name">—</div>
+        <div id="e-warning" style="color:var(--accent2);font-size:11px;letter-spacing:2px;margin-top:8px;display:none"></div>
+      </div>
+      <div class="game-btns">
+        <button class="land-btn" id="land-btn">🛹 LAND</button>
+        <button class="bail-btn" id="bail-btn">💀 BAIL</button>
+      </div>
+      <button class="skip-trick-btn" id="skip-trick-btn">↺ NEXT TRICK</button>
+    </div>
+    <div id="game-over-screen" class="game-over-screen">
+      <div class="game-over-title">GAME OVER</div>
+      <div class="game-over-winner" id="game-winner-text"></div>
+      <button class="restart-btn" onclick="resetGame()">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <!-- PROFILE SECTION -->
+  <div id="profile-section" class="section">
+    <div class="pro-header">
+      <div class="pro-avatar" id="pro-avatar">?</div>
+      <div>
+        <div class="pro-name" id="pro-name-display"></div>
+        <button class="pro-edit" id="pro-edit-btn">✏ EDIT NICKNAME</button>
+      </div>
+    </div>
+    <div class="progress-bars" id="progress-bars"></div>
+    <div style="margin-bottom:24px">
+      <div class="pro-section-title fav">⭐ FAVORITE TRICKS</div>
+      <div class="trick-pills" id="fav-pills"></div>
+    </div>
+    <div>
+      <div class="pro-section-title dream">💭 DREAM TRICKS</div>
+      <div class="trick-pills" id="dream-pills"></div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD SECTION -->
+  <div id="leaderboard-section" class="section">
+    <div class="sec-title">LEADERBOARD</div>
+    <div class="sec-sub">COMPARE YOUR TRICK COUNT</div>
+    <div class="lb-actions">
+      <button class="lb-btn" id="share-btn">📤 SHARE MY DATA</button>
+      <button class="lb-btn" id="import-toggle-btn">📥 IMPORT SKATER</button>
+    </div>
+    <div class="import-area" id="import-area">
+      <div style="font-size:11px;letter-spacing:2px;color:var(--text2);margin-bottom:8px">PASTE SKATER DATA (JSON)</div>
+      <textarea id="import-ta" placeholder='{"nickname":"...", ...}'></textarea>
+      <button class="import-submit" id="import-submit-btn">ADD TO BOARD</button>
+    </div>
+    <div class="lb-sort" id="lb-sort">
+      <button class="sort-btn active" data-sort="can">CAN DO</button>
+      <button class="sort-btn" data-sort="fav">FAVORITES</button>
+      <button class="sort-btn" data-sort="dream">DREAM</button>
+    </div>
+    <table class="lb-table" id="lb-table">
+      <thead><tr><th>#</th><th>SKATER</th><th>CAN DO</th><th>FAV</th><th>DREAM</th></tr></thead>
+      <tbody id="lb-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TRICK OVERVIEW MODAL -->
+<div class="overview-modal" id="overview-modal">
+  <div class="overview-inner">
+    <div class="overview-header">
+      <div class="overview-title" id="overview-title">CAN DO</div>
+      <button class="overview-close" id="overview-close">✕ CLOSE</button>
+    </div>
+    <div class="overview-list" id="overview-list"></div>
+  </div>
+</div>
+
+<!-- PRACTICE MODE MODAL -->
+<div class="practice-modal" id="practice-modal">
+  <div class="practice-inner">
+    <div style="font-size:11px;letter-spacing:3px;color:var(--text2);margin-bottom:8px">PRACTICE MODE</div>
+    <div class="practice-trick-name" id="practice-trick-name">KICKFLIP</div>
+    <div class="practice-score">
+      <div>
+        <div class="practice-num land" id="practice-lands">0</div>
+        <div class="practice-score-label">🛹 LAND</div>
+      </div>
+      <div>
+        <div class="practice-num bail" id="practice-bails">0</div>
+        <div class="practice-score-label">💀 BAIL</div>
+      </div>
+    </div>
+    <div class="practice-dots" id="practice-dots"></div>
+    <div class="practice-progress" id="practice-progress">ATTEMPT 1 / 10</div>
+    <div class="practice-btns">
+      <button class="pland-btn" id="pland-btn">🛹 LAND</button>
+      <button class="pbail-btn" id="pbail-btn">💀 BAIL</button>
+    </div>
+    <div class="practice-result" id="practice-result">
+      <div class="practice-result-text" id="practice-result-text"></div>
+      <div class="practice-result-sub" id="practice-result-sub"></div>
+    </div>
+    <button class="practice-close" id="practice-close">CLOSE</button>
+  </div>
+</div>
+
+<!-- MODAL (nickname) -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3 id="modal-title">CHANGE NICKNAME</h3>
+    <input id="modal-input" type="text" maxlength="16">
+    <div class="modal-btns">
+      <button class="modal-ok" id="modal-ok">SAVE</button>
+      <button class="modal-cancel" id="modal-cancel">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ============================================================
+// DATA — FLAT SECTION with stance subsections
+// ============================================================
+
+// Base tricks in Regular stance (displayed as-is)
+const FLAT_BASE = [
+  "Alpha Flip","Anti Casper Flip","Backside Flip","Backside Heelflip","Big Heelflip",
+  "Bigflip","Biggerflip","Bigspin","Biggerspin","Bubble Flip","Caballerial Flip",
+  "Camel Flip","Casper Flip","Daydream Flip","De Comply","Disco Flip","Feather Flip",
+  "Fingerflip","540 Flip","Forward Flip","Frontside Flip","Frontside Heelflip",
+  "Front Foot Impossible","Gazelle Flip","Gazelle Spin","Ghetto Bird","Gingersnap",
+  "Grape Flip","Handstand Flip","Hardflip","Haslam Flip","Heelflip","Halfcab",
+  "Hospital Flip","Illusion Flip","Impossible","Inward Heelflip","Jesus Flip",
+  "Kickback Flip","Kickflip","Kiwi Flip","Laser Flip","Nerd Flip","Nightmare Flip",
+  "No Comply","Orange Flip","Ollie North","Ollie South","Plasma Spin","Pop Shuvit",
+  "Pressure Flip","Rail Flip","Semiflip","720 Flip","Sex Change","Shuvit",
+  "Sigma Flip","360 Flip","360 Shuvit","360 Ollie Heelflip","360 Ollie Kickflip",
+  "Toeflip","Underflip","Varial Heelflip","Varial Kickflip",
+  // New additions
+  "FS Pop Shuvit","FS 180","FS 360","BS 180","BS 360"
+];
+
+// Stances
+const STANCES = ['Regular','Nollie','Fakie','Switch'];
+
+// Special Fakie names
+const FAKIE_OVERRIDE = {
+  'BS 180': 'Half Cab',
+  'BS 360': 'Caballerial'
+};
+
+// Build full trick name for a given base trick + stance
+function buildTrickName(base, stance) {
+  if (stance === 'Regular') return base;
+  if (stance === 'Fakie' && FAKIE_OVERRIDE[base]) {
+    return FAKIE_OVERRIDE[base];
+  }
+  return stance + ' ' + base;
+}
+
+// Build the flat tricks object keyed by stance
+function buildFlatTricks() {
+  const result = {};
+  STANCES.forEach(stance => {
+    result[stance] = FLAT_BASE.map(base => buildTrickName(base, stance));
+  });
+  return result;
+}
+
+const FLAT_TRICKS = buildFlatTricks(); // { Regular: [...], Nollie: [...], Fakie: [...], Switch: [...] }
+
+const TRICKS = {
+  grind_fs: [
+    "Frontside Barley Grind","Frontside Bertleman Slide","Frontside Bluntslide",
+    "Frontside Boardslide","Frontside Lipslide","Frontside Casperslide",
+    "Frontside Crail Slide","Frontside Crooked Grind","Frontside Darkslide",
+    "Frontside 50-50 Grind","Frontside 5-0 Grind","Frontside Feeble Grind",
+    "Frontside Hurricane","Frontside Layback Grind","Frontside Losi Grind",
+    "Frontside Nail Slide","Frontside Noseblunt Slide","Frontside Nosegrind",
+    "Frontside Noseslide","Frontside Overcrook Grind","Frontside Overturn",
+    "Frontside Primo Grind","Frontside Salad Grind","Frontside Slash Grind",
+    "Frontside Smith Grind","Frontside Suski Grind","Frontside Tailblock Grind",
+    "Frontside Tailslide","Frontside Willy Grind"
+  ],
+  grind_bs: [
+    "Backside Barley Grind","Backside Bertleman Slide","Backside Bluntslide",
+    "Backside Boardslide","Backside Lipslide","Backside Casperslide",
+    "Backside Crail Slide","Backside Crooked Grind","Backside Darkslide",
+    "Backside 50-50 Grind","Backside 5-0 Grind","Backside Feeble Grind",
+    "Backside Hurricane","Backside Layback Grind","Backside Losi Grind",
+    "Backside Nail Slide","Backside Noseblunt Slide","Backside Nosegrind",
+    "Backside Noseslide","Backside Overcrook Grind","Backside Overturn",
+    "Backside Primo Grind","Backside Salad Grind","Backside Slash Grind",
+    "Backside Smith Grind","Backside Suski Grind","Backside Tailblock Grind",
+    "Backside Tailslide","Backside Willy Grind"
+  ],
+  grab: [
+    "180","Frontside 180","Backside 180","270","360","540","720","900",
+    "Airwalk","Backflip","Benihana","Body Jar","Caballerial","Cannonball",
+    "Christ Air","Crail Grab","Crossbone","Delmar Indy","Double Grab",
+    "Frigid Air","Frontside Air","Grosman Grab","Helipop","Indy Grab",
+    "Japan Air","Judo Air","Lien Air","Madonna","McTwist","Melancholy Grab",
+    "Method Air","Mute Air","Nosebone","Nose Grab","Nuclear Grab",
+    "Ollie to Fakie","Roastbeef Grab","Rocket Air","Sacktap","Sal Flip",
+    "Saran Wrap","Seatbelt Grab","Slob Air","Stalefish Grab","Stiffy",
+    "Superman Grab","Tailbone","Tail Grab","Tuck Knee","Varial"
+  ],
+  ramp: [
+    "Axle Stall","Bean Plant","Blunt","Boneless","Crailtap","Creeper",
+    "Disaster","Egg Plant","Fastplant","Gymnast Plant","Ho-Ho","Layback Air",
+    "Miller Flip","Nose Pick","Nose Stall","Noseblunt","Pivot","Pivot Fakie",
+    "Pull Up","Rock and Roll","Rock to Fakie","Sad Plant","FS Smith",
+    "Staple Gun","Sweeper","Tailblock","Power Ollie","Tail Stall",
+    "Texas Plant","Texas Two-Step"
+  ],
+  misc: [
+    "Acid Drop","Alley Oop","Body Varial","Casper","Caveman","Coffin",
+    "Daffy","Firecracker","Flamingo","Hippy Jump","Hang Ten","Invert",
+    "Kickturn","Manual","Nose Manual","One Foot Manual","One Wheel Manual",
+    "Primo","Pogo","Powerslide","Roll In","Tic-Tac"
+  ]
+};
+
+// All flat tricks (all stances combined)
+const ALL_FLAT_TRICKS = [
+  ...FLAT_TRICKS.Regular,
+  ...FLAT_TRICKS.Nollie,
+  ...FLAT_TRICKS.Fakie,
+  ...FLAT_TRICKS.Switch
+];
+
+const ALL_TRICKS_FLAT = [...ALL_FLAT_TRICKS, ...TRICKS.grab, ...TRICKS.ramp, ...TRICKS.misc];
+const ALL_TRICKS_ALL = [
+  ...ALL_FLAT_TRICKS,
+  ...TRICKS.grind_fs, ...TRICKS.grind_bs,
+  ...TRICKS.grab, ...TRICKS.ramp, ...TRICKS.misc
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  nickname: '',
+  can: {},    // trickName: true
+  fav: {},    // trickName: true
+  dream: {},  // trickName: true
+  status: {}  // trickName: 'owned'|'owning'|'sketchy'
+};
+
+// ============================================================
+// MULTI-PROFILE STORAGE (nickname-keyed)
+// ============================================================
+function getStorageKey(nick) {
+  return 'skate_profile_' + nick.toUpperCase();
+}
+
+function loadProfileForNickname(nick) {
+  const key = getStorageKey(nick);
+  const raw = localStorage.getItem(key);
+  if (raw) {
+    try {
+      const saved = JSON.parse(raw);
+      state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {}, ...saved, nickname: nick };
+      if (!state.status) state.status = {};
+    } catch(e) {
+      state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {} };
+    }
+  } else {
+    // Try legacy single-profile
+    const legacy = localStorage.getItem('skate_state');
+    if (legacy) {
+      try {
+        const legData = JSON.parse(legacy);
+        if (legData.nickname && legData.nickname.toUpperCase() === nick.toUpperCase()) {
+          state = { ...legData, nickname: nick, status: legData.status || {} };
+          saveCurrentProfile();
+          return;
+        }
+      } catch(e) {}
+    }
+    state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {} };
+  }
+}
+
+function saveCurrentProfile() {
+  if (!state.nickname) return;
+  const key = getStorageKey(state.nickname);
+  localStorage.setItem(key, JSON.stringify(state));
+  // Keep last-used nickname
+  localStorage.setItem('skate_last_nick', state.nickname);
+}
+
+function getLBData() {
+  const d = localStorage.getItem('skate_lb');
+  return d ? JSON.parse(d) : [];
+}
+function saveLBData(lb) {
+  localStorage.setItem('skate_lb', JSON.stringify(lb));
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function pickN(arr, n) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a.slice(0, n);
+}
+function getCanTricks(inclGrind) {
+  const pool = inclGrind ? ALL_TRICKS_ALL : ALL_TRICKS_FLAT;
+  return pool.filter(t => state.can[t]);
+}
+function getFavTricks(inclGrind) {
+  const pool = inclGrind ? ALL_TRICKS_ALL : ALL_TRICKS_FLAT;
+  return pool.filter(t => state.fav[t]);
+}
+
+// ============================================================
+// SPLASH
+// ============================================================
+const lastNick = localStorage.getItem('skate_last_nick');
+if (lastNick) {
+  loadProfileForNickname(lastNick);
+  showApp();
+}
+
+document.getElementById('splash-btn').addEventListener('click', () => {
+  const v = document.getElementById('splash-input').value.trim().toUpperCase();
+  if (!v) { toast('ENTER A NICKNAME!'); return; }
+  loadProfileForNickname(v);
+  saveCurrentProfile();
+  showApp();
+  updateLeaderboardMe();
+});
+document.getElementById('splash-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('splash-btn').click();
+});
+
+function showApp() {
+  document.getElementById('splash').style.display = 'none';
+  const app = document.getElementById('app');
+  app.classList.add('active');
+  document.getElementById('nav-nick').textContent = state.nickname;
+  renderTricks('flat');
+  updateStats();
+  updateProfile();
+  updateLeaderboard();
+}
+
+// ============================================================
+// NICKNAME MODAL
+// ============================================================
+document.getElementById('nickname-btn').addEventListener('click', () => openModal());
+document.getElementById('pro-edit-btn').addEventListener('click', () => openModal());
+
+function openModal() {
+  document.getElementById('modal-input').value = state.nickname;
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-input').focus();
+}
+document.getElementById('modal-ok').addEventListener('click', () => {
+  const v = document.getElementById('modal-input').value.trim().toUpperCase();
+  if (!v) return;
+  // Save current profile before switching
+  saveCurrentProfile();
+  // Load new profile
+  loadProfileForNickname(v);
+  saveCurrentProfile();
+  document.getElementById('nav-nick').textContent = v;
+  document.getElementById('modal').classList.remove('open');
+  updateProfile();
+  updateLeaderboardMe();
+  renderTricks(currentCat);
+  updateStats();
+  toast('NICKNAME UPDATED!');
+});
+document.getElementById('modal-cancel').addEventListener('click', () => {
+  document.getElementById('modal').classList.remove('open');
+});
+document.getElementById('modal-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('modal-ok').click();
+});
+
+// ============================================================
+// NAV
+// ============================================================
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(tab + '-section').classList.add('active');
+    if (tab === 'profile') updateProfile();
+    if (tab === 'leaderboard') updateLeaderboard();
+  });
+});
+document.getElementById('nickname-btn').addEventListener('click', () => {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('profile-section').classList.add('active');
+  document.querySelector('[data-tab="profile"]').classList.add('active');
+  updateProfile();
+  openModal();
+});
+
+// ============================================================
+// TRICK LIST
+// ============================================================
+let currentCat = 'flat';
+document.querySelectorAll('.cat-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentCat = tab.dataset.cat;
+    renderTricks(currentCat);
+  });
+});
+
+function renderTricks(cat) {
+  const container = document.getElementById('trick-container');
+  container.innerHTML = '';
+  if (cat === 'grind') {
+    renderGrindSection(container);
+  } else if (cat === 'flat') {
+    renderFlatSection(container);
+  } else {
+    const tricks = TRICKS[cat] || [];
+    const grid = document.createElement('div');
+    grid.className = 'trick-grid';
+    tricks.forEach(t => grid.appendChild(makeTrickCard(t)));
+    container.appendChild(grid);
+  }
+}
+
+function renderFlatSection(container) {
+  STANCES.forEach(stance => {
+    const sec = document.createElement('div');
+    sec.className = 'flat-section';
+    const lbl = document.createElement('div');
+    lbl.className = 'flat-label';
+    lbl.textContent = '— ' + stance.toUpperCase();
+    sec.appendChild(lbl);
+    const grid = document.createElement('div');
+    grid.className = 'trick-grid';
+    FLAT_TRICKS[stance].forEach(t => grid.appendChild(makeTrickCard(t)));
+    sec.appendChild(grid);
+    container.appendChild(sec);
+  });
+}
+
+function renderGrindSection(container) {
+  ['grind_fs', 'grind_bs'].forEach(sub => {
+    const sec = document.createElement('div');
+    sec.className = 'grind-section';
+    const lbl = document.createElement('div');
+    lbl.className = 'grind-label';
+    lbl.textContent = sub === 'grind_fs' ? '— FRONTSIDE' : '— BACKSIDE';
+    sec.appendChild(lbl);
+    const grid = document.createElement('div');
+    grid.className = 'trick-grid';
+    TRICKS[sub].forEach(t => grid.appendChild(makeTrickCard(t)));
+    sec.appendChild(grid);
+    container.appendChild(sec);
+  });
+}
+
+function makeTrickCard(trick) {
+  const card = document.createElement('div');
+  card.className = 'trick-card';
+  card.id = 'card-' + encodeURIComponent(trick);
+  updateCardClass(card, trick);
+
+  const name = document.createElement('span');
+  name.className = 'trick-name';
+  name.textContent = trick;
+
+  const icons = document.createElement('div');
+  icons.className = 'trick-icons';
+
+  // Can Do
+  const canBtn = document.createElement('button');
+  canBtn.className = 'icon-btn' + (state.can[trick] ? ' can-active' : '');
+  canBtn.title = 'Can Do';
+  canBtn.textContent = '✅';
+  canBtn.addEventListener('click', () => {
+    if (state.can[trick]) {
+      state.can[trick] = false;
+      state.fav[trick] = false;
+      delete state.status[trick];
+    } else {
+      state.can[trick] = true;
+      state.dream[trick] = false;
+    }
+    saveCurrentProfile();
+    updateCardClass(card, trick);
+    canBtn.className = 'icon-btn' + (state.can[trick] ? ' can-active' : '');
+    favBtn.className = 'icon-btn' + (state.fav[trick] ? ' fav-active' : '');
+    favBtn.disabled = !state.can[trick];
+    dreamBtn.className = 'icon-btn' + (state.dream[trick] ? ' dream-active' : '');
+    dreamBtn.disabled = !!state.can[trick];
+    updateStats();
+  });
+
+  // Favorite
+  const favBtn = document.createElement('button');
+  favBtn.className = 'icon-btn' + (state.fav[trick] ? ' fav-active' : '');
+  favBtn.title = 'Favorite';
+  favBtn.textContent = '⭐';
+  favBtn.disabled = !state.can[trick];
+  favBtn.addEventListener('click', () => {
+    state.fav[trick] = !state.fav[trick];
+    saveCurrentProfile();
+    updateCardClass(card, trick);
+    favBtn.className = 'icon-btn' + (state.fav[trick] ? ' fav-active' : '');
+    updateStats();
+  });
+
+  // Dream
+  const dreamBtn = document.createElement('button');
+  dreamBtn.className = 'icon-btn' + (state.dream[trick] ? ' dream-active' : '');
+  dreamBtn.title = 'Dream Trick';
+  dreamBtn.textContent = '💭';
+  dreamBtn.disabled = !!state.can[trick];
+  dreamBtn.addEventListener('click', () => {
+    state.dream[trick] = !state.dream[trick];
+    saveCurrentProfile();
+    updateCardClass(card, trick);
+    dreamBtn.className = 'icon-btn' + (state.dream[trick] ? ' dream-active' : '');
+    updateStats();
+  });
+
+  icons.append(canBtn, favBtn, dreamBtn);
+  card.append(name, icons);
+  return card;
+}
+
+function updateCardClass(card, trick) {
+  card.className = 'trick-card';
+  if (state.fav[trick]) card.classList.add('favorite');
+  else if (state.can[trick]) card.classList.add('can-do');
+  if (state.dream[trick]) card.classList.add('dream-trick');
+}
+
+function updateStats() {
+  const can = Object.values(state.can).filter(Boolean).length;
+  const fav = Object.values(state.fav).filter(Boolean).length;
+  const dream = Object.values(state.dream).filter(Boolean).length;
+  document.getElementById('stat-can').textContent = can;
+  document.getElementById('stat-fav').textContent = fav;
+  document.getElementById('stat-dream').textContent = dream;
+}
+
+// ============================================================
+// TRICK OVERVIEW MODAL (click stat cards)
+// ============================================================
+let currentOverviewType = 'can';
+
+document.getElementById('stat-can-card').addEventListener('click', () => openOverview('can'));
+document.getElementById('stat-fav-card').addEventListener('click', () => openOverview('fav'));
+document.getElementById('stat-dream-card').addEventListener('click', () => openOverview('dream'));
+document.getElementById('overview-close').addEventListener('click', () => {
+  document.getElementById('overview-modal').classList.remove('open');
+});
+
+function openOverview(type) {
+  currentOverviewType = type;
+  const modal = document.getElementById('overview-modal');
+  const title = document.getElementById('overview-title');
+  const list = document.getElementById('overview-list');
+
+  const labels = { can: '✅ CAN DO', fav: '⭐ FAVORITE', dream: '💭 DREAM' };
+  title.textContent = labels[type];
+  title.className = 'overview-title ' + type;
+
+  const tricks = ALL_TRICKS_ALL.filter(t => state[type][t]);
+  list.innerHTML = '';
+
+  if (tricks.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:var(--text2);padding:48px;font-size:11px;letter-spacing:3px">NO TRICKS YET</div>';
+  } else {
+    tricks.forEach(t => {
+      const item = document.createElement('div');
+      item.className = 'overview-item';
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'overview-trick-name';
+      nameEl.textContent = t;
+
+      const badges = document.createElement('div');
+      badges.className = 'overview-badges';
+
+      if (type === 'can' || type === 'fav') {
+        // Status badges
+        ['owned','owning','sketchy'].forEach(s => {
+          const badge = document.createElement('button');
+          badge.className = 'status-badge ' + s + (state.status[t] === s ? ' active' : '');
+          badge.textContent = s.toUpperCase();
+          badge.addEventListener('click', () => {
+            if (state.status[t] === s) {
+              delete state.status[t];
+            } else {
+              state.status[t] = s;
+            }
+            saveCurrentProfile();
+            // Re-render
+            openOverview(currentOverviewType);
+          });
+          badges.appendChild(badge);
+        });
+
+        // Practice button
+        const practiceBtn = document.createElement('button');
+        practiceBtn.className = 'practice-btn';
+        practiceBtn.textContent = '▶ PRACTICE';
+        practiceBtn.addEventListener('click', () => openPractice(t));
+        badges.appendChild(practiceBtn);
+      }
+
+      item.append(nameEl, badges);
+      list.appendChild(item);
+    });
+  }
+
+  modal.classList.add('open');
+}
+
+// ============================================================
+// PRACTICE MODE
+// ============================================================
+let practiceState = {
+  trick: '',
+  attempts: [],
+  maxAttempts: 10,
+  done: false
+};
+
+function openPractice(trickName) {
+  practiceState = { trick: trickName, attempts: [], maxAttempts: 10, done: false };
+  document.getElementById('practice-trick-name').textContent = trickName;
+  document.getElementById('practice-lands').textContent = '0';
+  document.getElementById('practice-bails').textContent = '0';
+  document.getElementById('practice-progress').textContent = 'ATTEMPT 1 / 10';
+  document.getElementById('practice-result').style.display = 'none';
+  document.getElementById('pland-btn').disabled = false;
+  document.getElementById('pbail-btn').disabled = false;
+  renderPracticeDots();
+  document.getElementById('practice-modal').classList.add('open');
+}
+
+function renderPracticeDots() {
+  const container = document.getElementById('practice-dots');
+  container.innerHTML = '';
+  for (let i = 0; i < practiceState.maxAttempts; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'practice-dot';
+    if (i < practiceState.attempts.length) {
+      dot.classList.add(practiceState.attempts[i] ? 'land' : 'bail');
+    }
+    container.appendChild(dot);
+  }
+}
+
+function handlePracticeAttempt(landed) {
+  if (practiceState.done) return;
+  practiceState.attempts.push(landed);
+  const lands = practiceState.attempts.filter(Boolean).length;
+  const bails = practiceState.attempts.filter(a => !a).length;
+  document.getElementById('practice-lands').textContent = lands;
+  document.getElementById('practice-bails').textContent = bails;
+  renderPracticeDots();
+
+  if (practiceState.attempts.length >= practiceState.maxAttempts) {
+    practiceState.done = true;
+    document.getElementById('pland-btn').disabled = true;
+    document.getElementById('pbail-btn').disabled = true;
+
+    // Determine status
+    let newStatus, resultText, resultColor;
+    if (lands >= 7) {
+      newStatus = 'owned';
+      resultText = 'OWNED! 🔥';
+      resultColor = 'var(--owned)';
+    } else if (lands >= 5) {
+      newStatus = 'owning';
+      resultText = 'OWNING IT 💪';
+      resultColor = 'var(--owning)';
+    } else {
+      newStatus = 'sketchy';
+      resultText = 'SKETCHY 😅';
+      resultColor = 'var(--sketchy)';
+    }
+
+    state.status[practiceState.trick] = newStatus;
+    saveCurrentProfile();
+
+    const resultDiv = document.getElementById('practice-result');
+    const resultTextEl = document.getElementById('practice-result-text');
+    const resultSubEl = document.getElementById('practice-result-sub');
+    resultTextEl.textContent = resultText;
+    resultTextEl.style.color = resultColor;
+    resultSubEl.textContent = lands + '/10 LANDS → STATUS: ' + newStatus.toUpperCase();
+    resultDiv.style.display = 'block';
+
+    document.getElementById('practice-progress').textContent = 'DONE! ' + lands + '/10 LANDED';
+  } else {
+    document.getElementById('practice-progress').textContent =
+      'ATTEMPT ' + (practiceState.attempts.length + 1) + ' / 10';
+  }
+}
+
+document.getElementById('pland-btn').addEventListener('click', () => handlePracticeAttempt(true));
+document.getElementById('pbail-btn').addEventListener('click', () => handlePracticeAttempt(false));
+document.getElementById('practice-close').addEventListener('click', () => {
+  document.getElementById('practice-modal').classList.remove('open');
+  // Refresh overview if open
+  const ov = document.getElementById('overview-modal');
+  if (ov.classList.contains('open')) openOverview(currentOverviewType);
+});
+
+// ============================================================
+// LINE GENERATOR
+// ============================================================
+let lineConfig = { count: 2, pool: 'can', grind: 'all' };
+
+function setupSelBtns(groupId, key) {
+  document.querySelectorAll('#' + groupId + ' .sel-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#' + groupId + ' .sel-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      lineConfig[key] = btn.dataset.val;
+    });
+  });
+}
+setupSelBtns('num-btns', 'count');
+setupSelBtns('pool-btns', 'pool');
+setupSelBtns('grind-btns', 'grind');
+
+document.getElementById('gen-btn').addEventListener('click', generateLine);
+document.getElementById('regen-btn').addEventListener('click', generateLine);
+
+function generateLine() {
+  const inclGrind = lineConfig.grind === 'all';
+  const tricks = lineConfig.pool === 'fav' ? getFavTricks(inclGrind) : getCanTricks(inclGrind);
+  const n = parseInt(lineConfig.count);
+  if (tricks.length === 0) { toast('NO TRICKS IN POOL! SELECT SOME TRICKS FIRST.'); return; }
+  if (tricks.length < n) { toast(`ONLY ${tricks.length} TRICKS AVAILABLE — PICK FEWER OR ADD MORE!`); return; }
+  const picked = pickN(tricks, n);
+  const result = document.getElementById('line-result');
+  const cards = document.getElementById('line-cards');
+  cards.innerHTML = '';
+  picked.forEach((t, i) => {
+    const card = document.createElement('div');
+    card.className = 'line-trick-card';
+    card.style.animationDelay = (i * 0.08) + 's';
+    card.innerHTML = `<div class="num">${i + 1}</div><div class="tname"><strong>${t}</strong></div>`;
+    cards.appendChild(card);
+  });
+  result.style.display = 'block';
+}
+
+// ============================================================
+// GAME OF SKATE
+// ============================================================
+const LETTERS = ['S', 'K', 'A', 'T', 'E'];
+let gState = {
+  players: 1, p1: '', p2: '',
+  p1Letters: 0, p2Letters: 0,
+  eHalf: [false, false],
+  currentPlayer: 0,
+  pool: 'can', grind: 'all',
+  currentTrick: '', over: false
+};
+
+function setupSelBtns2(groupId, key) {
+  document.querySelectorAll('#' + groupId + ' .sel-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#' + groupId + ' .sel-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      if (key === 'players') {
+        gState.players = parseInt(btn.dataset.val);
+        document.getElementById('p2-name-group').style.display = gState.players === 2 ? 'block' : 'none';
+      } else {
+        gState[key] = btn.dataset.val;
+      }
+    });
+  });
+}
+setupSelBtns2('gplayer-btns', 'players');
+setupSelBtns2('gpool-btns', 'pool');
+setupSelBtns2('ggrind-btns', 'grind');
+
+document.getElementById('start-game-btn').addEventListener('click', startGame);
+document.getElementById('land-btn').addEventListener('click', () => handleResult(true));
+document.getElementById('bail-btn').addEventListener('click', () => handleResult(false));
+document.getElementById('skip-trick-btn').addEventListener('click', nextTrick);
+
+function startGame() {
+  const inclGrind = gState.grind === 'all';
+  const pool = gState.pool === 'fav' ? getFavTricks(inclGrind) : getCanTricks(inclGrind);
+  if (pool.length === 0) { toast('NO TRICKS IN POOL!'); return; }
+  gState.p1 = state.nickname;
+  gState.p2 = gState.players === 2 ? (document.getElementById('p2-input').value.trim().toUpperCase() || 'P2') : '';
+  gState.p1Letters = 0; gState.p2Letters = 0;
+  gState.eHalf = [false, false];
+  gState.currentPlayer = 0;
+  gState.over = false;
+  gState.trickPool = pool;
+  document.getElementById('game-setup-panel').style.display = 'none';
+  document.getElementById('game-play').style.display = 'block';
+  document.getElementById('game-over-screen').style.display = 'none';
+  renderSkateLetters('p1', gState.p1, gState.p1Letters);
+  if (gState.players === 2) {
+    document.getElementById('p2-letters-label').style.display = 'block';
+    document.getElementById('p2-letters').style.display = 'flex';
+    renderSkateLetters('p2', gState.p2, gState.p2Letters);
+  } else {
+    document.getElementById('p2-letters-label').style.display = 'none';
+    document.getElementById('p2-letters').style.display = 'none';
+  }
+  updatePlayerTurn();
+  nextTrick();
+}
+
+function renderSkateLetters(player, name, count) {
+  const lbl = document.getElementById(player + '-letters-label');
+  const el = document.getElementById(player + '-letters');
+  lbl.textContent = name;
+  el.innerHTML = '';
+  LETTERS.forEach((l, i) => {
+    const span = document.createElement('div');
+    span.className = 'skate-letter' + (i < count ? ' got' : '');
+    if (l === 'E' && i === 4 && i === count && gState.eHalf[player === 'p1' ? 0 : 1]) span.classList.add('e-half');
+    span.textContent = l;
+    el.appendChild(span);
+  });
+}
+
+function updatePlayerTurn() {
+  const name = gState.currentPlayer === 0 ? gState.p1 : gState.p2;
+  document.getElementById('current-player-name').textContent = name;
+}
+
+function nextTrick() {
+  if (gState.over) return;
+  gState.currentTrick = rand(gState.trickPool);
+  document.getElementById('current-trick-name').textContent = gState.currentTrick;
+  document.getElementById('e-warning').style.display = 'none';
+  const pidx = gState.currentPlayer;
+  const letters = pidx === 0 ? gState.p1Letters : gState.p2Letters;
+  if (letters === 4 && gState.eHalf[pidx]) {
+    document.getElementById('e-warning').style.display = 'block';
+    document.getElementById('e-warning').textContent = '⚠ LAST CHANCE — E (2/2)';
+  }
+}
+
+function handleResult(landed) {
+  if (gState.over) return;
+  const pidx = gState.currentPlayer;
+  if (landed) {
+    if (gState.players === 2) { gState.currentPlayer = 1 - gState.currentPlayer; updatePlayerTurn(); }
+    nextTrick(); return;
+  }
+  const letters = pidx === 0 ? gState.p1Letters : gState.p2Letters;
+  const nextLetter = LETTERS[letters];
+  if (nextLetter === 'E') {
+    if (!gState.eHalf[pidx]) {
+      gState.eHalf[pidx] = true;
+      document.getElementById('e-warning').style.display = 'block';
+      document.getElementById('e-warning').textContent = '⚠ ONE MORE BAIL = E (1/2)';
+      renderSkateLetters('p' + (pidx + 1), pidx === 0 ? gState.p1 : gState.p2, letters);
+      if (gState.players === 2) { gState.currentPlayer = 1 - gState.currentPlayer; updatePlayerTurn(); }
+      nextTrick(); return;
+    } else {
+      if (pidx === 0) gState.p1Letters++;
+      else gState.p2Letters++;
+      gState.eHalf[pidx] = false;
+    }
+  } else {
+    if (pidx === 0) gState.p1Letters++;
+    else gState.p2Letters++;
+  }
+  renderSkateLetters('p1', gState.p1, gState.p1Letters);
+  if (gState.players === 2) renderSkateLetters('p2', gState.p2, gState.p2Letters);
+  const p1done = gState.p1Letters >= 5;
+  const p2done = gState.players === 2 && gState.p2Letters >= 5;
+  if (p1done || p2done) {
+    gState.over = true;
+    document.getElementById('game-play').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'block';
+    if (gState.players === 1) document.getElementById('game-winner-text').textContent = 'YOU GOT SKATED!';
+    else if (p1done && p2done) document.getElementById('game-winner-text').textContent = "IT'S A TIE!";
+    else if (p1done) document.getElementById('game-winner-text').textContent = gState.p2 + ' WINS!';
+    else document.getElementById('game-winner-text').textContent = gState.p1 + ' WINS!';
+    return;
+  }
+  if (gState.players === 2) { gState.currentPlayer = 1 - gState.currentPlayer; updatePlayerTurn(); }
+  nextTrick();
+}
+
+function resetGame() {
+  document.getElementById('game-setup-panel').style.display = 'block';
+  document.getElementById('game-play').style.display = 'none';
+  document.getElementById('game-over-screen').style.display = 'none';
+}
+
+// ============================================================
+// PROFILE
+// ============================================================
+function updateProfile() {
+  document.getElementById('pro-avatar').textContent = (state.nickname || '?')[0];
+  document.getElementById('pro-name-display').textContent = state.nickname || '???';
+
+  const catDef = [
+    { key: 'flat', label: 'FLAT', tricks: ALL_FLAT_TRICKS },
+    { key: 'grind', label: 'GRIND/SLIDE', tricks: [...TRICKS.grind_fs, ...TRICKS.grind_bs] },
+    { key: 'grab', label: 'GRAB & AIR', tricks: TRICKS.grab },
+    { key: 'ramp', label: 'RAMP', tricks: TRICKS.ramp },
+    { key: 'misc', label: 'MISC', tricks: TRICKS.misc },
+  ];
+  const pb = document.getElementById('progress-bars');
+  pb.innerHTML = '';
+  catDef.forEach(c => {
+    const done = c.tricks.filter(t => state.can[t]).length;
+    const total = c.tricks.length;
+    const pct = Math.round(done / total * 100);
+    pb.innerHTML += `<div class="prog-row">
+      <div class="prog-label">${c.label}</div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      <div class="prog-pct">${done}/${total}</div>
+    </div>`;
+  });
+
+  const favP = document.getElementById('fav-pills');
+  favP.innerHTML = '';
+  const favTricks = ALL_TRICKS_ALL.filter(t => state.fav[t]);
+  if (favTricks.length) {
+    favTricks.forEach(t => {
+      const p = document.createElement('span');
+      p.className = 'pill fav';
+      p.textContent = t;
+      favP.appendChild(p);
+    });
+  } else {
+    favP.innerHTML = '<span style="color:var(--text2);font-size:11px;letter-spacing:2px">NO FAVORITES YET</span>';
+  }
+
+  const dreamP = document.getElementById('dream-pills');
+  dreamP.innerHTML = '';
+  const dreamTricks = ALL_TRICKS_ALL.filter(t => state.dream[t]);
+  if (dreamTricks.length) {
+    dreamTricks.forEach(t => {
+      const p = document.createElement('span');
+      p.className = 'pill dream';
+      p.textContent = t;
+      dreamP.appendChild(p);
+    });
+  } else {
+    dreamP.innerHTML = '<span style="color:var(--text2);font-size:11px;letter-spacing:2px">NO DREAM TRICKS YET</span>';
+  }
+}
+
+// ============================================================
+// LEADERBOARD
+// ============================================================
+let lbSort = 'can';
+
+function getMyData() {
+  return {
+    nickname: state.nickname,
+    can: Object.values(state.can).filter(Boolean).length,
+    fav: Object.values(state.fav).filter(Boolean).length,
+    dream: Object.values(state.dream).filter(Boolean).length,
+    flat: ALL_FLAT_TRICKS.filter(t => state.can[t]).length,
+    grind: [...TRICKS.grind_fs, ...TRICKS.grind_bs].filter(t => state.can[t]).length,
+    grab: TRICKS.grab.filter(t => state.can[t]).length,
+    ramp: TRICKS.ramp.filter(t => state.can[t]).length,
+    misc: TRICKS.misc.filter(t => state.can[t]).length,
+  };
+}
+
+function updateLeaderboardMe() {
+  const lb = getLBData();
+  const me = getMyData();
+  const idx = lb.findIndex(e => e._isMe);
+  if (idx >= 0) lb[idx] = { ...me, _isMe: true };
+  else lb.push({ ...me, _isMe: true });
+  saveLBData(lb);
+}
+
+function updateLeaderboard() {
+  updateLeaderboardMe();
+  renderLeaderboard();
+}
+
+function renderLeaderboard() {
+  const lb = getLBData();
+  const sorted = [...lb].sort((a, b) => b[lbSort] - a[lbSort]);
+  const tbody = document.getElementById('lb-body');
+  tbody.innerHTML = '';
+  sorted.forEach((e, i) => {
+    const rankClass = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
+    tbody.innerHTML += `<tr>
+      <td><span class="lb-rank ${rankClass}">${i + 1}</span></td>
+      <td><span class="lb-name ${e._isMe ? 'me' : ''}">${e._isMe ? '★ ' : ''} ${e.nickname}</span></td>
+      <td><span class="lb-num can">${e.can}</span></td>
+      <td><span class="lb-num fav">${e.fav}</span></td>
+      <td><span class="lb-num dream">${e.dream}</span></td>
+    </tr>`;
+  });
+  if (sorted.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text2);padding:32px;font-size:11px;letter-spacing:2px">NO SKATERS YET</td></tr>';
+  }
+}
+
+document.querySelectorAll('.sort-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    lbSort = btn.dataset.sort;
+    renderLeaderboard();
+  });
+});
+
+document.getElementById('share-btn').addEventListener('click', () => {
+  const data = getMyData();
+  const json = JSON.stringify(data);
+  navigator.clipboard.writeText(json).then(() => {
+    toast('DATA COPIED TO CLIPBOARD!');
+  }).catch(() => {
+    prompt('COPY THIS DATA:', json);
+  });
+});
+
+document.getElementById('import-toggle-btn').addEventListener('click', () => {
+  const area = document.getElementById('import-area');
+  area.style.display = area.style.display === 'none' ? 'block' : 'none';
+});
+
+document.getElementById('import-submit-btn').addEventListener('click', () => {
+  try {
+    const raw = document.getElementById('import-ta').value.trim();
+    const data = JSON.parse(raw);
+    if (!data.nickname) throw new Error('no nickname');
+    const lb = getLBData();
+    const idx = lb.findIndex(e => !e._isMe && e.nickname === data.nickname);
+    const entry = {
+      nickname: data.nickname,
+      can: data.can || 0, fav: data.fav || 0, dream: data.dream || 0,
+      flat: data.flat || 0, grind: data.grind || 0, grab: data.grab || 0,
+      ramp: data.ramp || 0, misc: data.misc || 0
+    };
+    if (idx >= 0) lb[idx] = entry;
+    else lb.push(entry);
+    saveLBData(lb);
+    renderLeaderboard();
+    document.getElementById('import-ta').value = '';
+    document.getElementById('import-area').style.display = 'none';
+    toast(`${data.nickname} ADDED TO LEADERBOARD!`);
+  } catch (e) {
+    toast('INVALID DATA!');
+  }
+});
+</script>
+</body>
+</html>
