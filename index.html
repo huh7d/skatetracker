@@ -551,20 +551,20 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 // Base tricks in Regular stance (displayed as-is)
 const FLAT_BASE = [
-  "Alpha Flip","Anti Casper Flip","Backside Flip","Backside Heelflip","Big Heelflip",
-  "Bigflip","Biggerflip","Bigspin","Biggerspin","Bubble Flip","Caballerial Flip",
-  "Camel Flip","Casper Flip","Daydream Flip","De Comply","Disco Flip","Feather Flip",
-  "Fingerflip","540 Flip","Forward Flip","Frontside Flip","Frontside Heelflip",
-  "Front Foot Impossible","Gazelle Flip","Gazelle Spin","Ghetto Bird","Gingersnap",
-  "Grape Flip","Handstand Flip","Hardflip","Haslam Flip","Heelflip","Halfcab",
-  "Hospital Flip","Illusion Flip","Impossible","Inward Heelflip","Jesus Flip",
-  "Kickback Flip","Kickflip","Kiwi Flip","Laser Flip","Nerd Flip","Nightmare Flip",
-  "No Comply","Orange Flip","Ollie North","Ollie South","Plasma Spin","Pop Shuvit",
-  "Pressure Flip","Rail Flip","Semiflip","720 Flip","Sex Change","Shuvit",
-  "Sigma Flip","360 Flip","360 Shuvit","360 Ollie Heelflip","360 Ollie Kickflip",
-  "Toeflip","Underflip","Varial Heelflip","Varial Kickflip",
+  "알파 플립","안티 캐스퍼 플립","백사이드 플립","백사이드 힐플립","빅 힐플립",
+  "빅플립","비거플립","빅스핀","비거스핀","버블 플립","카발레리알 플립",
+  "캐멀 플립","캐스퍼 플립","데이드림 플립","디 컴플라이","디스코 플립","페더 플립",
+  "핑거플립","540 플립","포워드 플립","프론트사이드 플립","프론트사이드 힐플립",
+  "프론트 풋 임파서블","가젤 플립","가젤 스핀","게토 버드","진저스냅",
+  "그레이프 플립","핸드스탠드 플립","하드플립","해슬람 플립","힐플립","하프캡",
+  "호스피탈 플립","일루전 플립","임파서블","인워드 힐플립","지저스 플립",
+  "킥백 플립","킥플립","키위 플립","레이저 플립","너드 플립","나이트메어 플립",
+  "노 컴플라이","오렌지 플립","올리 노스","올리 사우스","플라즈마 스핀","팝 셔빗",
+  "프레셔 플립","레일 플립","세미플립","720 플립","섹스 체인지","셔빗",
+  "시그마 플립","360 플립","360 셔빗","360 올리 힐플립","360 올리 킥플립",
+  "토플립","언더플립","베리얼 힐플립","베리얼 킥플립",
   // New additions
-  "FS Pop Shuvit","FS 180","FS 360","BS 180","BS 360"
+  "FS 팝 셔빗","FS 180","FS 360","BS 180","BS 360"
 ];
 
 // Stances
@@ -572,8 +572,8 @@ const STANCES = ['Regular','Nollie','Fakie','Switch'];
 
 // Special Fakie names
 const FAKIE_OVERRIDE = {
-  'BS 180': 'Half Cab',
-  'BS 360': 'Caballerial'
+  'BS 180': '하프캡',
+  'BS 360': '카발레리알'
 };
 
 // Build full trick name for a given base trick + stance
@@ -582,7 +582,8 @@ function buildTrickName(base, stance) {
   if (stance === 'Fakie' && FAKIE_OVERRIDE[base]) {
     return FAKIE_OVERRIDE[base];
   }
-  return stance + ' ' + base;
+  const stanceKo = { 'Nollie': '놀리', 'Fakie': '페이키', 'Switch': '스위치' };
+  return stanceKo[stance] + ' ' + base;
 }
 
 // Build the flat tricks object keyed by stance
@@ -598,53 +599,53 @@ const FLAT_TRICKS = buildFlatTricks(); // { Regular: [...], Nollie: [...], Fakie
 
 const TRICKS = {
   grind_fs: [
-    "Frontside Barley Grind","Frontside Bertleman Slide","Frontside Bluntslide",
-    "Frontside Boardslide","Frontside Lipslide","Frontside Casperslide",
-    "Frontside Crail Slide","Frontside Crooked Grind","Frontside Darkslide",
-    "Frontside 50-50 Grind","Frontside 5-0 Grind","Frontside Feeble Grind",
-    "Frontside Hurricane","Frontside Layback Grind","Frontside Losi Grind",
-    "Frontside Nail Slide","Frontside Noseblunt Slide","Frontside Nosegrind",
-    "Frontside Noseslide","Frontside Overcrook Grind","Frontside Overturn",
-    "Frontside Primo Grind","Frontside Salad Grind","Frontside Slash Grind",
-    "Frontside Smith Grind","Frontside Suski Grind","Frontside Tailblock Grind",
-    "Frontside Tailslide","Frontside Willy Grind"
+    "프론트사이드 발리 그라인드","프론트사이드 버틀맨 슬라이드","프론트사이드 블런트슬라이드",
+    "프론트사이드 보드슬라이드","프론트사이드 립슬라이드","프론트사이드 캐스퍼슬라이드",
+    "프론트사이드 크레일 슬라이드","프론트사이드 크룩드 그라인드","프론트사이드 다크슬라이드",
+    "프론트사이드 50-50 그라인드","프론트사이드 5-0 그라인드","프론트사이드 피블 그라인드",
+    "프론트사이드 허리케인","프론트사이드 레이백 그라인드","프론트사이드 로지 그라인드",
+    "프론트사이드 네일 슬라이드","프론트사이드 노즈블런트 슬라이드","프론트사이드 노즈그라인드",
+    "프론트사이드 노즈슬라이드","프론트사이드 오버크룩 그라인드","프론트사이드 오버턴",
+    "프론트사이드 프리모 그라인드","프론트사이드 샐러드 그라인드","프론트사이드 슬래시 그라인드",
+    "프론트사이드 스미스 그라인드","프론트사이드 수스키 그라인드","프론트사이드 테일블록 그라인드",
+    "프론트사이드 테일슬라이드","프론트사이드 윌리 그라인드"
   ],
   grind_bs: [
-    "Backside Barley Grind","Backside Bertleman Slide","Backside Bluntslide",
-    "Backside Boardslide","Backside Lipslide","Backside Casperslide",
-    "Backside Crail Slide","Backside Crooked Grind","Backside Darkslide",
-    "Backside 50-50 Grind","Backside 5-0 Grind","Backside Feeble Grind",
-    "Backside Hurricane","Backside Layback Grind","Backside Losi Grind",
-    "Backside Nail Slide","Backside Noseblunt Slide","Backside Nosegrind",
-    "Backside Noseslide","Backside Overcrook Grind","Backside Overturn",
-    "Backside Primo Grind","Backside Salad Grind","Backside Slash Grind",
-    "Backside Smith Grind","Backside Suski Grind","Backside Tailblock Grind",
-    "Backside Tailslide","Backside Willy Grind"
+    "백사이드 발리 그라인드","백사이드 버틀맨 슬라이드","백사이드 블런트슬라이드",
+    "백사이드 보드슬라이드","백사이드 립슬라이드","백사이드 캐스퍼슬라이드",
+    "백사이드 크레일 슬라이드","백사이드 크룩드 그라인드","백사이드 다크슬라이드",
+    "백사이드 50-50 그라인드","백사이드 5-0 그라인드","백사이드 피블 그라인드",
+    "백사이드 허리케인","백사이드 레이백 그라인드","백사이드 로지 그라인드",
+    "백사이드 네일 슬라이드","백사이드 노즈블런트 슬라이드","백사이드 노즈그라인드",
+    "백사이드 노즈슬라이드","백사이드 오버크룩 그라인드","백사이드 오버턴",
+    "백사이드 프리모 그라인드","백사이드 샐러드 그라인드","백사이드 슬래시 그라인드",
+    "백사이드 스미스 그라인드","백사이드 수스키 그라인드","백사이드 테일블록 그라인드",
+    "백사이드 테일슬라이드","백사이드 윌리 그라인드"
   ],
   grab: [
-    "180","Frontside 180","Backside 180","270","360","540","720","900",
-    "Airwalk","Backflip","Benihana","Body Jar","Caballerial","Cannonball",
-    "Christ Air","Crail Grab","Crossbone","Delmar Indy","Double Grab",
-    "Frigid Air","Frontside Air","Grosman Grab","Helipop","Indy Grab",
-    "Japan Air","Judo Air","Lien Air","Madonna","McTwist","Melancholy Grab",
-    "Method Air","Mute Air","Nosebone","Nose Grab","Nuclear Grab",
-    "Ollie to Fakie","Roastbeef Grab","Rocket Air","Sacktap","Sal Flip",
-    "Saran Wrap","Seatbelt Grab","Slob Air","Stalefish Grab","Stiffy",
-    "Superman Grab","Tailbone","Tail Grab","Tuck Knee","Varial"
+    "180","프론트사이드 180","백사이드 180","270","360","540","720","900",
+    "에어워크","백플립","베니하나","바디 자","카발레리알","캐논볼",
+    "크라이스트 에어","크레일 그랩","크로스본","델마 인디","더블 그랩",
+    "프리지드 에어","프론트사이드 에어","그로스만 그랩","헬리팝","인디 그랩",
+    "재팬 에어","주도 에어","리엔 에어","마돈나","맥트위스트","멜랑꼴리 그랩",
+    "메서드 에어","뮤트 에어","노즈본","노즈 그랩","뉴클리어 그랩",
+    "올리 투 페이키","로스트비프 그랩","로켓 에어","색탭","살 플립",
+    "사란 랩","시트벨트 그랩","슬럽 에어","스테일피시 그랩","스티피",
+    "수퍼맨 그랩","테일본","테일 그랩","턱 니","베리얼"
   ],
   ramp: [
-    "Axle Stall","Bean Plant","Blunt","Boneless","Crailtap","Creeper",
-    "Disaster","Egg Plant","Fastplant","Gymnast Plant","Ho-Ho","Layback Air",
-    "Miller Flip","Nose Pick","Nose Stall","Noseblunt","Pivot","Pivot Fakie",
-    "Pull Up","Rock and Roll","Rock to Fakie","Sad Plant","FS Smith",
-    "Staple Gun","Sweeper","Tailblock","Power Ollie","Tail Stall",
-    "Texas Plant","Texas Two-Step"
+    "액슬 스톨","빈 플랜트","블런트","본리스","크레일탭","크리퍼",
+    "디재스터","에그 플랜트","패스트플랜트","짐나스트 플랜트","호호","레이백 에어",
+    "밀러 플립","노즈 픽","노즈 스톨","노즈블런트","피벗","피벗 페이키",
+    "풀 업","락 앤 롤","락 투 페이키","새드 플랜트","FS 스미스",
+    "스테이플 건","스위퍼","테일블록","파워 올리","테일 스톨",
+    "텍사스 플랜트","텍사스 투스텝"
   ],
   misc: [
-    "Acid Drop","Alley Oop","Body Varial","Casper","Caveman","Coffin",
-    "Daffy","Firecracker","Flamingo","Hippy Jump","Hang Ten","Invert",
-    "Kickturn","Manual","Nose Manual","One Foot Manual","One Wheel Manual",
-    "Primo","Pogo","Powerslide","Roll In","Tic-Tac"
+    "애시드 드롭","앨리 웁","바디 베리얼","캐스퍼","케이브맨","코핀",
+    "대피","파이어크래커","플라밍고","히피 점프","행 텐","인버트",
+    "킥턴","매뉴얼","노즈 매뉴얼","원 풋 매뉴얼","원 휠 매뉴얼",
+    "프리모","포고","파워슬라이드","롤 인","틱택"
   ]
 };
 
