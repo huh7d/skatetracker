@@ -353,6 +353,50 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 /* OVERVIEW REMOVE BTN */
 .overview-remove-btn{background:none;border:1px solid var(--red);color:var(--red);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;flex-shrink:0;padding:0}
 .overview-remove-btn:hover{background:var(--red);color:#fff}
+/* ============================================================
+   CHALLENGE
+   ============================================================ */
+.challenge-counter-wrap{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);padding:20px 24px;margin-bottom:24px}
+.challenge-counter-box{display:flex;align-items:baseline;gap:14px}
+.challenge-counter-num{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--accent2);line-height:1}
+.challenge-counter-label{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--text2)}
+.challenge-reset-btn{background:none;border:1px solid var(--border);color:var(--text2);font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;padding:8px 18px;cursor:pointer;transition:.2s}
+.challenge-reset-btn:hover{border-color:var(--red);color:var(--red)}
+.challenge-list{display:flex;flex-direction:column;gap:12px}
+.challenge-card{background:var(--bg2);border:1px solid var(--border);overflow:hidden}
+.challenge-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px}
+.challenge-card-body{flex:1;min-width:0}
+.challenge-card-type{font-size:10px;letter-spacing:3px;color:var(--text2);margin-bottom:4px;text-transform:uppercase}
+.challenge-card-flat .challenge-card-type{color:var(--can)}
+.challenge-card-grind .challenge-card-type{color:var(--accent2)}
+.challenge-card-ramp .challenge-card-type{color:var(--dream)}
+.challenge-card-spot .challenge-card-type{color:var(--accent3)}
+.challenge-card-misc .challenge-card-type{color:#cc88ff}
+.challenge-card-text{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;letter-spacing:1px;color:var(--text);line-height:1.3}
+.challenge-card-actions{display:flex;gap:8px;flex-shrink:0}
+.challenge-done-btn{background:var(--accent);color:#000;border:none;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;padding:8px 16px;cursor:pointer;transition:.2s}
+.challenge-done-btn:hover{background:#c8d000;transform:scale(1.05)}
+.challenge-refresh-btn{background:none;border:1px solid var(--border);color:var(--text2);font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;padding:8px 14px;cursor:pointer;transition:.2s}
+.challenge-refresh-btn:hover{border-color:var(--text);color:var(--text)}
+.pro-challenge-row{background:var(--bg2);border:1px solid var(--border);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between}
+.pro-challenge-num{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--accent2);line-height:1}
+.pro-spot-row{background:var(--bg2);border:1px solid var(--border);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between}
+.pro-spot-num{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--accent3);line-height:1}
+.pro-count-badge{font-size:28px;margin-left:8px;vertical-align:middle}
+
+/* SPOT PAGE */
+.spot-counter-wrap{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);padding:20px 24px;margin-bottom:24px}
+.spot-counter-box{display:flex;align-items:baseline;gap:14px}
+.spot-counter-num{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--accent3);line-height:1}
+.spot-counter-label{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--text2)}
+.spot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.spot-card{background:var(--bg2);border:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.2s;user-select:none}
+.spot-card:hover{border-color:var(--text2)}
+.spot-card.visited{border-color:var(--accent3);background:rgba(0,255,204,.06)}
+.spot-check{width:22px;height:22px;border:2px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:.2s}
+.spot-card.visited .spot-check{background:var(--accent3);border-color:var(--accent3);color:#000}
+.spot-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px}
+.spot-card.visited .spot-name{color:var(--accent3)}
 
 </style>
 </head>
@@ -378,11 +422,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <button id="nickname-btn">👤 <span id="nav-nick"></span></button>
   </div>
   <nav id="nav">
-    <button class="nav-btn active" data-tab="status">MY STATUS</button>
+    <button class="nav-btn" data-tab="profile">PROFILE</button>
+    <button class="nav-btn" data-tab="status">MY STATUS</button>
     <button class="nav-btn" data-tab="tricks">TRICK LIST</button>
+    <button class="nav-btn" data-tab="spot">SPOT</button>
+    <button class="nav-btn" data-tab="challenge">CHALLENGE</button>
+    <button class="nav-btn" data-tab="practice">PRACTICE</button>
     <button class="nav-btn" data-tab="lines">LINE GEN</button>
     <button class="nav-btn" data-tab="game">GAME OF SKATE</button>
-    <button class="nav-btn" data-tab="profile">PROFILE</button>
     <button class="nav-btn" data-tab="leaderboard">LEADERBOARD</button>
   </nav>
 
@@ -403,6 +450,73 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <button class="cat-tab" data-cat="misc">MISC</button>
     </div>
     <div id="trick-container"></div>
+  </div>
+
+  <!-- SPOT SECTION -->
+  <div id="spot-section" class="section">
+    <div class="sec-title">SPOT</div>
+    <div class="sec-sub">방문한 스케이트 스팟 체크</div>
+    <div class="spot-counter-wrap">
+      <div class="spot-counter-box">
+        <div class="spot-counter-num" id="spot-count">0</div>
+        <div class="spot-counter-label">📍 방문한 스팟<span id="spot-count-badge" class="pro-count-badge"></span></div>
+      </div>
+    </div>
+    <div class="spot-grid" id="spot-grid"></div>
+  </div>
+
+  <!-- CHALLENGE SECTION -->
+  <div id="challenge-section" class="section">
+    <div class="sec-title">CHALLENGE</div>
+    <div class="sec-sub">COMPLETE DAILY CHALLENGES — LEVEL UP YOUR SKATING</div>
+
+    <!-- 달성 카운터 -->
+    <div class="challenge-counter-wrap">
+      <div class="challenge-counter-box">
+        <div class="challenge-counter-num" id="challenge-count">0</div>
+        <div class="challenge-counter-label">🏆 달성한 챌린지<span id="challenge-count-badge" class="pro-count-badge"></span></div>
+      </div>
+      <button class="challenge-reset-btn" id="challenge-reset-btn">↺ 리셋</button>
+    </div>
+
+    <!-- 챌린지 카드 5개 -->
+    <div class="challenge-list" id="challenge-list"></div>
+  </div>
+
+  <!-- PRACTICE SECTION -->
+  <div id="practice-section" class="section">
+    <div class="sec-title">PRACTICE</div>
+    <div class="sec-sub">TRICK STATUS — LAND &amp; BAIL TO UPDATE</div>
+
+    <div class="status-group-block">
+      <div class="status-group-header" onclick="toggleStatusGroup('pg-owned')">
+        <span class="status-group-title">🔥🛹 OWNED</span>
+        <span class="status-group-arrow" id="pg-owned-arrow">▼</span>
+      </div>
+      <div class="status-group-body" id="pg-owned">
+        <div class="status-sub-list" id="practice-owned-list"></div>
+      </div>
+    </div>
+
+    <div class="status-group-block">
+      <div class="status-group-header" onclick="toggleStatusGroup('pg-owning')">
+        <span class="status-group-title">💪 OWNING</span>
+        <span class="status-group-arrow" id="pg-owning-arrow">▼</span>
+      </div>
+      <div class="status-group-body" id="pg-owning">
+        <div class="status-sub-list" id="practice-owning-list"></div>
+      </div>
+    </div>
+
+    <div class="status-group-block">
+      <div class="status-group-header" onclick="toggleStatusGroup('pg-sketchy')">
+        <span class="status-group-title">😅 SKETCHY</span>
+        <span class="status-group-arrow" id="pg-sketchy-arrow">▼</span>
+      </div>
+      <div class="status-group-body" id="pg-sketchy">
+        <div class="status-sub-list" id="practice-sketchy-list"></div>
+      </div>
+    </div>
   </div>
 
   <!-- LINE GENERATOR SECTION -->
@@ -508,7 +622,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
 
   <!-- PROFILE SECTION -->
-  <div id="profile-section" class="section">
+  <div id="profile-section" class="section active">
     <div class="pro-header">
       <div class="pro-avatar" id="pro-avatar">?</div>
       <div>
@@ -517,6 +631,22 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       </div>
     </div>
     <div class="progress-bars" id="progress-bars"></div>
+    <!-- 챌린지 달성 수 -->
+    <div class="pro-challenge-row" id="pro-challenge-row">
+      <div class="pro-section-title" style="color:var(--accent2);margin-bottom:8px">🏆 달성한 챌린지</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="pro-challenge-num" id="pro-challenge-num">0</div>
+        <span id="pro-challenge-badge" class="pro-count-badge"></span>
+      </div>
+    </div>
+    <!-- 방문한 스팟 수 -->
+    <div class="pro-spot-row" id="pro-spot-row">
+      <div class="pro-section-title" style="color:var(--accent3);margin-bottom:8px">📍 방문한 스팟</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="pro-spot-num" id="pro-spot-num">0</div>
+        <span id="pro-spot-badge" class="pro-count-badge"></span>
+      </div>
+    </div>
     <div style="margin-bottom:24px">
       <div class="pro-section-title fav">⭐ FAVORITE TRICKS</div>
       <div class="trick-pills" id="fav-pills"></div>
@@ -528,7 +658,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
 
   <!-- MY STATUS SECTION -->
-  <div id="status-section" class="section active">
+  <div id="status-section" class="section">
     <div class="sec-title">MY STATUS</div>
     <div class="sec-sub">TRICK STATUS &amp; FAVORITES OVERVIEW</div>
 
@@ -825,6 +955,16 @@ const ALL_TRICKS_ALL = [
 ];
 
 // ============================================================
+// SPOTS DATA
+// ============================================================
+const SPOTS = [
+  "뚝섬 스케이트파크","노해","신촌 메가박스","k88","광나루","이촌파크",
+  "대화파크","컬트","죽전","서울숲","도림천","수내","살곶이",
+  "펍지","디디미","평촌","운정","트랜지션 정글","상암","난지",
+  "망우","일자산","의정부시청"
+];
+
+// ============================================================
 // STATE
 // ============================================================
 let state = {
@@ -833,7 +973,8 @@ let state = {
   fav: {},    // trickName: true
   dream: {},  // trickName: true
   status: {},  // trickName: 'owned'|'owning'|'sketchy'
-  customTricks: {} // section: [trickName, ...]
+  customTricks: {}, // section: [trickName, ...]
+  visitedSpots: {}  // spotName: true
 };
 
 // ============================================================
@@ -849,11 +990,12 @@ function loadProfileForNickname(nick) {
   if (raw) {
     try {
       const saved = JSON.parse(raw);
-      state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {}, customTricks: {}, ...saved, nickname: nick };
+      state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {}, customTricks: {}, visitedSpots: {}, ...saved, nickname: nick };
       if (!state.status) state.status = {};
       if (!state.customTricks) state.customTricks = {};
+      if (!state.visitedSpots) state.visitedSpots = {};
     } catch(e) {
-      state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {} };
+      state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {}, customTricks: {}, visitedSpots: {} };
     }
   } else {
     // Try legacy single-profile
@@ -868,7 +1010,7 @@ function loadProfileForNickname(nick) {
         }
       } catch(e) {}
     }
-    state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {}, customTricks: {} };
+    state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {}, customTricks: {}, visitedSpots: {} };
   }
 }
 
@@ -962,6 +1104,11 @@ function showApp() {
   updateProfile();
   updateLeaderboard();
   updateStatusPage();
+  renderSpotPage();
+  updatePracticePage();
+  // Profile이 첫 탭 — nav 활성화
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-tab="profile"]').classList.add('active');
 }
 
 // ============================================================
@@ -1011,6 +1158,9 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     if (tab === 'profile') updateProfile();
     if (tab === 'leaderboard') updateLeaderboard();
     if (tab === 'status') updateStatusPage();
+    if (tab === 'challenge') renderChallengePage();
+    if (tab === 'spot') renderSpotPage();
+    if (tab === 'practice') updatePracticePage();
   });
 });
 document.getElementById('nickname-btn').addEventListener('click', () => {
@@ -1379,6 +1529,9 @@ document.getElementById('practice-close').addEventListener('click', () => {
   document.getElementById('practice-modal').classList.remove('open');
   // Refresh status page
   updateStatusPage();
+  // Refresh practice page if active
+  const practiceSection = document.getElementById('practice-section');
+  if (practiceSection.classList.contains('active')) updatePracticePage();
   // Refresh overview if open
   const ov = document.getElementById('overview-modal');
   if (ov.classList.contains('open')) openOverview(currentOverviewType);
@@ -1646,6 +1799,17 @@ function updateProfile() {
   } else {
     favP.innerHTML = '<span style="color:var(--text2);font-size:11px;letter-spacing:2px">NO FAVORITES YET</span>';
   }
+
+  // 챌린지 달성 수
+  const challengeCount = getChallengeCount();
+  document.getElementById('pro-challenge-num').textContent = challengeCount;
+  document.getElementById('pro-challenge-badge').textContent = getCountBadge(challengeCount);
+  document.getElementById('pro-challenge-row').style.display = 'flex';
+
+  // 방문한 스팟 수
+  const spotCount = Object.values(state.visitedSpots || {}).filter(Boolean).length;
+  document.getElementById('pro-spot-num').textContent = spotCount;
+  document.getElementById('pro-spot-badge').textContent = getCountBadge(spotCount);
 
   const dreamP = document.getElementById('dream-pills');
   dreamP.innerHTML = '';
@@ -1944,6 +2108,265 @@ function renderStatusTrickList(containerId, tricks, panelMode) {
   });
 }
 
+// ============================================================
+// COUNT BADGE HELPER
+// ============================================================
+function getCountBadge(n) {
+  if (n >= 50) return '💀💀💀💀💀💀💀';
+  if (n >= 40) return '🤯🔥💥';
+  if (n >= 30) return '👑🔥';
+  if (n >= 20) return '🔥';
+  if (n >= 10) return '🛹';
+  return '';
+}
+
+// ============================================================
+// SPOT PAGE
+// ============================================================
+function getVisitedSpotCount() {
+  return Object.values(state.visitedSpots || {}).filter(Boolean).length;
+}
+
+function renderSpotPage() {
+  const count = getVisitedSpotCount();
+  document.getElementById('spot-count').textContent = count;
+  document.getElementById('spot-count-badge').textContent = getCountBadge(count);
+
+  const grid = document.getElementById('spot-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  SPOTS.forEach(spot => {
+    const card = document.createElement('div');
+    const visited = !!(state.visitedSpots && state.visitedSpots[spot]);
+    card.className = 'spot-card' + (visited ? ' visited' : '');
+    card.innerHTML = `<div class="spot-check">${visited ? '✓' : ''}</div><div class="spot-name">${spot}</div>`;
+    card.addEventListener('click', () => {
+      if (!state.visitedSpots) state.visitedSpots = {};
+      state.visitedSpots[spot] = !state.visitedSpots[spot];
+      saveCurrentProfile();
+      renderSpotPage();
+      // profile 갱신
+      const proSection = document.getElementById('profile-section');
+      if (proSection.classList.contains('active')) updateProfile();
+    });
+    grid.appendChild(card);
+  });
+}
+
+// ============================================================
+// CHALLENGE
+// ============================================================
+
+// 챌린지 저장 키 (닉네임 기반)
+function getChallengeStorageKey() {
+  return 'skate_challenge_' + (state.nickname || 'guest').toUpperCase();
+}
+
+function loadChallengeData() {
+  try {
+    const raw = localStorage.getItem(getChallengeStorageKey());
+    return raw ? JSON.parse(raw) : { count: 0, slots: [null, null, null, null, null] };
+  } catch(e) {
+    return { count: 0, slots: [null, null, null, null, null] };
+  }
+}
+
+function saveChallengeData(data) {
+  localStorage.setItem(getChallengeStorageKey(), JSON.stringify(data));
+}
+
+function getChallengeCount() {
+  return loadChallengeData().count;
+}
+
+// 챌린지 풀 생성 — can do 목록에서 유형별 챌린지 문구 배열 반환
+function buildChallengePool() {
+  const pool = [];
+
+  // ── SPOT 챌린지 (스팟 목록에서 랜덤 1개 선택) ──
+  const randomSpot = SPOTS[Math.floor(Math.random() * SPOTS.length)];
+  const spotChallenges = [
+    `${randomSpot}에서 보드타기`,
+    `${randomSpot}에서 찍은 클립 좋아요 10개 이상 받기`,
+    `${randomSpot}에서 스케이터 3명 이상과 대화하기`,
+    `${randomSpot}에서 슬램하기`,
+    `${randomSpot}에서 스케이터 1명 이상과 백투백 성공하기`,
+    `${randomSpot}에서 새벽 6시 이전에 타기`,
+    `${randomSpot}에서 3시간 이상 타기`,
+  ];
+  spotChallenges.forEach(v => pool.push({ type: 'spot', trick: randomSpot, text: v }));
+
+  // ── MISC: 매뉴얼 / 노즈매뉴얼 관련 챌린지 ──
+  const miscCando = TRICKS.misc.filter(t => state.can[t]);
+  const hasManual = miscCando.some(t => t === '매뉴얼' || t === '노즈 매뉴얼');
+  if (hasManual) {
+    pool.push({ type: 'misc', trick: '매뉴얼', text: '매뉴얼패드에 매뉴얼(노즈매뉴얼) 끝까지 버티기' });
+
+    // flat can do 트릭 각각에 대해 매뉴얼 콤보 챌린지
+    const flatCandoForManual = ALL_FLAT_TRICKS.filter(t => state.can[t]);
+    flatCandoForManual.forEach(t => {
+      pool.push({ type: 'misc', trick: t, text: `매뉴얼 패드에 ${t} 업해서 매뉴얼(노즈매뉴얼)하기` });
+    });
+  }
+
+  // ── MISC: 파워슬라이드 ──
+  if (miscCando.some(t => t === '파워슬라이드')) {
+    pool.push({ type: 'misc', trick: '파워슬라이드', text: '파워슬라이드 5미터 밀기' });
+  }
+
+  // ── FLAT 트릭 챌린지 ──
+  const flatCando = ALL_FLAT_TRICKS.filter(t => state.can[t]);
+  flatCando.forEach(t => {
+    const variants = [
+      `${t} 5번 깔끔하게 타기`,
+      `${t} 연속으로 3번 타기`,
+      `${t} 10번 성공`,
+      `${t} 다운 5번`,
+      `${t} 업 5번`,
+      `${t}로 장애물 넘기 3번`,
+      `피라미드에서 ${t} 3번`,
+      `A프레임에서 ${t} 3번 성공`,
+      `뱅크에서 ${t} 3번 성공`,
+      `램프에서 ${t} 3번 성공`,
+    ];
+    variants.forEach(v => pool.push({ type: 'flat', trick: t, text: v }));
+  });
+
+  // ── GRIND & SLIDE 트릭 챌린지 ──
+  const grindCando = [...TRICKS.grind_fs, ...TRICKS.grind_bs].filter(t => state.can[t]);
+  grindCando.forEach(t => {
+    const variants = [
+      `허바렛지에서 ${t} 깔끔하게 타기`,
+      `렛지에서 ${t} 깔끔하게 타기`,
+      `레일에서 ${t} 깔끔하게 타기`,
+      `핸드레일에서 ${t} 깔끔하게 타기`,
+      `렛지에 ${t} 5번 성공`,
+      `레일에 ${t} 5번 성공`,
+    ];
+    variants.forEach(v => pool.push({ type: 'grind', trick: t, text: v }));
+  });
+
+  // ── RAMP 트릭 챌린지 ──
+  const rampCando = TRICKS.ramp.filter(t => state.can[t]);
+  rampCando.forEach(t => {
+    const variants = [
+      `미니램프에서 ${t} 5번 성공`,
+      `하프파이프에서 ${t} 3번 성공`,
+    ];
+    variants.forEach(v => pool.push({ type: 'ramp', trick: t, text: v }));
+  });
+
+  return pool;
+}
+
+function pickRandomChallenge(exclude) {
+  const pool = buildChallengePool();
+  if (pool.length === 0) return null;
+  // 중복 방지 (같은 text 제외)
+  const filtered = pool.filter(c => !exclude.includes(c.text));
+  const source = filtered.length > 0 ? filtered : pool;
+  return source[Math.floor(Math.random() * source.length)];
+}
+
+function renderChallengePage() {
+  const data = loadChallengeData();
+  // count 표시
+  document.getElementById('challenge-count').textContent = data.count;
+  document.getElementById('challenge-count-badge').textContent = getCountBadge(data.count);
+
+  const list = document.getElementById('challenge-list');
+  list.innerHTML = '';
+
+  const pool = buildChallengePool();
+  if (pool.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text2);font-size:11px;letter-spacing:3px">CAN DO 트릭을 추가하면 챌린지가 생성됩니다.</div>';
+    return;
+  }
+
+  // 슬롯이 null이면 채워넣기
+  const currentTexts = data.slots.filter(Boolean).map(s => s.text);
+  for (let i = 0; i < 5; i++) {
+    if (!data.slots[i]) {
+      const c = pickRandomChallenge(currentTexts);
+      data.slots[i] = c;
+      if (c) currentTexts.push(c.text);
+    }
+  }
+  saveChallengeData(data);
+
+  data.slots.forEach((challenge, idx) => {
+    if (!challenge) return;
+    const card = document.createElement('div');
+    const typeClass = challenge.type === 'flat' ? 'challenge-card-flat'
+                    : challenge.type === 'grind' ? 'challenge-card-grind'
+                    : challenge.type === 'spot' ? 'challenge-card-spot'
+                    : challenge.type === 'misc' ? 'challenge-card-misc'
+                    : 'challenge-card-ramp';
+    card.className = `challenge-card ${typeClass}`;
+
+    const typeLabel = challenge.type === 'flat' ? '🛹 FLAT'
+                    : challenge.type === 'grind' ? '⚙ GRIND & SLIDE'
+                    : challenge.type === 'spot' ? '📍 SPOT'
+                    : challenge.type === 'misc' ? '⚡ MISC'
+                    : '🎢 RAMP';
+
+    card.innerHTML = `
+      <div class="challenge-card-top">
+        <div class="challenge-card-body">
+          <div class="challenge-card-type">${typeLabel}</div>
+          <div class="challenge-card-text">${challenge.text}</div>
+        </div>
+        <div class="challenge-card-actions">
+          <button class="challenge-done-btn" data-idx="${idx}">✔ 성공</button>
+          <button class="challenge-refresh-btn" data-idx="${idx}">↺</button>
+        </div>
+      </div>`;
+
+    list.appendChild(card);
+  });
+
+  // 성공 버튼
+  list.querySelectorAll('.challenge-done-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      const data = loadChallengeData();
+      data.count++;
+      // 새 챌린지로 교체
+      const used = data.slots.filter((s, i) => i !== idx && s).map(s => s.text);
+      data.slots[idx] = pickRandomChallenge(used);
+      saveChallengeData(data);
+      renderChallengePage();
+      // Profile도 갱신
+      const proSection = document.getElementById('profile-section');
+      if (proSection.classList.contains('active')) updateProfile();
+    });
+  });
+
+  // 새로고침 버튼
+  list.querySelectorAll('.challenge-refresh-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      const data = loadChallengeData();
+      const used = data.slots.filter((s, i) => i !== idx && s).map(s => s.text);
+      data.slots[idx] = pickRandomChallenge(used);
+      saveChallengeData(data);
+      renderChallengePage();
+    });
+  });
+}
+
+document.getElementById('challenge-reset-btn').addEventListener('click', () => {
+  const data = loadChallengeData();
+  data.count = 0;
+  saveChallengeData(data);
+  document.getElementById('challenge-count').textContent = 0;
+  document.getElementById('challenge-count-badge').textContent = '';
+  const proSection = document.getElementById('profile-section');
+  if (proSection.classList.contains('active')) updateProfile();
+});
+
+// ============================================================
 function updateStatusPage() {
   const allTricks = ALL_TRICKS_ALL_CUSTOM();
 
@@ -1956,6 +2379,17 @@ function updateStatusPage() {
   renderStatusTrickList('status-owned-list',  allTricks.filter(t => state.status[t] === 'owned'),  'status');
   renderStatusTrickList('status-owning-list', allTricks.filter(t => state.status[t] === 'owning'), 'status');
   renderStatusTrickList('status-sketchy-list',allTricks.filter(t => state.status[t] === 'sketchy'),'status');
+
+  // Sync practice page if visible
+  const practiceSection = document.getElementById('practice-section');
+  if (practiceSection && practiceSection.classList.contains('active')) updatePracticePage();
+}
+
+function updatePracticePage() {
+  const allTricks = ALL_TRICKS_ALL_CUSTOM();
+  renderStatusTrickList('practice-owned-list',  allTricks.filter(t => state.status[t] === 'owned'),   'status');
+  renderStatusTrickList('practice-owning-list', allTricks.filter(t => state.status[t] === 'owning'),  'status');
+  renderStatusTrickList('practice-sketchy-list',allTricks.filter(t => state.status[t] === 'sketchy'), 'status');
 }
 
 function ALL_TRICKS_ALL_CUSTOM() {
