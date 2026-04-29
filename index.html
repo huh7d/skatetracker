@@ -282,7 +282,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .empty p{font-size:12px;letter-spacing:2px}
 
 /* STATUS PAGE */
-.status-group-block{background:var(--bg2);border:1px solid var(--border);margin-bottom:12px;overflow:hidden}
+.status-group-block{background:var(--bg2);border:1px solid var(--border);margin-bottom:12px}
 .status-group-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none;transition:.15s}
 .status-group-header:hover{background:var(--bg3)}
 .status-group-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--text)}
@@ -299,7 +299,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .can-label{color:var(--can)}
 .fav-label{color:var(--fav)}
 .dream-label{color:var(--dream)}
-.status-sub-list{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);background:var(--bg)}
+.status-sub-list{display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--border)}
 .status-empty{color:var(--text2);font-size:11px;letter-spacing:2px;padding:10px 12px;display:block}
 
 /* STATUS TRICK ROW */
@@ -348,12 +348,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   .status-group-title{font-size:18px}
 }
 
-/* DRAG & DROP REORDER (My Status) */
-.st-row{touch-action:none}
-.st-row.dragging{opacity:.4;background:var(--bg3)}
-.st-row.drag-over{border-top:2px solid var(--accent)}
-.drag-handle{cursor:grab;padding:0 8px 0 0;color:var(--text2);font-size:14px;flex-shrink:0;user-select:none;touch-action:none}
-.drag-handle:active{cursor:grabbing}
+
 
 /* OVERVIEW REMOVE BTN */
 .overview-remove-btn{background:none;border:1px solid var(--red);color:var(--red);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;flex-shrink:0;padding:0}
@@ -838,8 +833,7 @@ let state = {
   fav: {},    // trickName: true
   dream: {},  // trickName: true
   status: {},  // trickName: 'owned'|'owning'|'sketchy'
-  customTricks: {}, // section: [trickName, ...]
-  statusOrder: {}   // listId: [trickName, ...] — My Status 정렬 순서
+  customTricks: {} // section: [trickName, ...]
 };
 
 // ============================================================
@@ -855,10 +849,9 @@ function loadProfileForNickname(nick) {
   if (raw) {
     try {
       const saved = JSON.parse(raw);
-      state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {}, customTricks: {}, statusOrder: {}, ...saved, nickname: nick };
+      state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {}, customTricks: {}, ...saved, nickname: nick };
       if (!state.status) state.status = {};
       if (!state.customTricks) state.customTricks = {};
-      if (!state.statusOrder) state.statusOrder = {};
     } catch(e) {
       state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {} };
     }
@@ -1741,34 +1734,10 @@ function renderStatusTrickList(containerId, tricks, panelMode) {
     return;
   }
 
-  // 저장된 순서 적용
-  const savedOrder = state.statusOrder[containerId];
-  if (savedOrder && savedOrder.length) {
-    const orderMap = new Map(savedOrder.map((t, i) => [t, i]));
-    tricks = [...tricks].sort((a, b) => {
-      const ai = orderMap.has(a) ? orderMap.get(a) : 9999;
-      const bi = orderMap.has(b) ? orderMap.get(b) : 9999;
-      return ai - bi;
-    });
-  }
-
-  // 현재 순서 저장 헬퍼
-  function saveOrder() {
-    if (!state.statusOrder) state.statusOrder = {};
-    state.statusOrder[containerId] = Array.from(el.querySelectorAll('.st-row')).map(r => r.dataset.trick);
-    saveCurrentProfile();
-  }
-
   tricks.forEach(trickName => {
     const row = document.createElement('div');
     row.className = 'st-row';
     row.dataset.trick = trickName;
-
-    // --- 드래그 핸들 ---
-    const handle = document.createElement('div');
-    handle.className = 'drag-handle';
-    handle.textContent = '⠿';
-    handle.title = '드래그하여 순서 변경';
 
     // --- Top button ---
     const btn = document.createElement('button');
@@ -1917,97 +1886,12 @@ function renderStatusTrickList(containerId, tricks, panelMode) {
       }
     });
 
-    // row 레이아웃: 핸들 + 버튼 + 패널
+    // row 레이아웃: 버튼 + 패널
     const topRow = document.createElement('div');
     topRow.className = 'st-row-top';
-    topRow.append(handle, btn);
+    topRow.append(btn);
     row.append(topRow, panel);
     el.appendChild(row);
-
-    // ── 드래그&드롭 (마우스) ──
-    handle.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      const rows = () => Array.from(el.querySelectorAll('.st-row'));
-      let dragging = row;
-      dragging.classList.add('dragging');
-      let overRow = null;
-
-      const onMove = (e) => {
-        const y = e.clientY;
-        let target = null;
-        rows().forEach(r => {
-          if (r === dragging) return;
-          const rect = r.getBoundingClientRect();
-          if (y >= rect.top && y <= rect.bottom) target = r;
-        });
-        rows().forEach(r => r.classList.remove('drag-over'));
-        if (target) { target.classList.add('drag-over'); overRow = target; }
-        else overRow = null;
-      };
-
-      const onUp = () => {
-        dragging.classList.remove('dragging');
-        rows().forEach(r => r.classList.remove('drag-over'));
-        if (overRow) {
-          const rowsArr = rows();
-          const fromIdx = rowsArr.indexOf(dragging);
-          const toIdx   = rowsArr.indexOf(overRow);
-          if (fromIdx !== toIdx) {
-            if (fromIdx < toIdx) overRow.after(dragging);
-            else overRow.before(dragging);
-            saveOrder();
-          }
-        }
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('mouseup', onUp);
-      };
-
-      document.addEventListener('mousemove', onMove);
-      document.addEventListener('mouseup', onUp);
-    });
-
-    // ── 터치 드래그 ──
-    handle.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      const rows = () => Array.from(el.querySelectorAll('.st-row'));
-      let dragging = row;
-      dragging.classList.add('dragging');
-      let overRow = null;
-
-      const onMove = (e) => {
-        const touch = e.touches[0];
-        const y = touch.clientY;
-        let target = null;
-        rows().forEach(r => {
-          if (r === dragging) return;
-          const rect = r.getBoundingClientRect();
-          if (y >= rect.top && y <= rect.bottom) target = r;
-        });
-        rows().forEach(r => r.classList.remove('drag-over'));
-        if (target) { target.classList.add('drag-over'); overRow = target; }
-        else overRow = null;
-      };
-
-      const onEnd = () => {
-        dragging.classList.remove('dragging');
-        rows().forEach(r => r.classList.remove('drag-over'));
-        if (overRow) {
-          const rowsArr = rows();
-          const fromIdx = rowsArr.indexOf(dragging);
-          const toIdx   = rowsArr.indexOf(overRow);
-          if (fromIdx !== toIdx) {
-            if (fromIdx < toIdx) overRow.after(dragging);
-            else overRow.before(dragging);
-            saveOrder();
-          }
-        }
-        handle.removeEventListener('touchmove', onMove);
-        handle.removeEventListener('touchend', onEnd);
-      };
-
-      handle.addEventListener('touchmove', onMove, { passive: false });
-      handle.addEventListener('touchend', onEnd);
-    }, { passive: false });
   });
 }
 
