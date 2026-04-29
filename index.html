@@ -20,7 +20,7 @@
   --fav: #ff6b00;
   --dream: #00ffcc;
   --red: #ff3333;
-  --owned: #f5ff00;
+  --owned: #4da6ff;
   --owning: #ff6b00;
   --sketchy: #ff3333;
 }
@@ -45,7 +45,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 /* APP */
 #app{display:none;flex-direction:column;min-height:100vh}
-#app.active{display:flex}
+#app.active{display:flex!important}
 
 /* TOP BAR */
 #topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
@@ -95,7 +95,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .overview-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .status-badge{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;padding:4px 10px;border:1px solid;cursor:pointer;transition:.15s}
 .status-badge.owned{border-color:var(--owned);color:var(--owned)}
-.status-badge.owned.active{background:var(--owned);color:#000}
+.status-badge.owned.active{background:var(--owned);color:#fff}
 .status-badge.owning{border-color:var(--owning);color:var(--owning)}
 .status-badge.owning.active{background:var(--owning);color:#fff}
 .status-badge.sketchy{border-color:var(--sketchy);color:var(--sketchy)}
@@ -281,17 +281,84 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .empty-icon{font-size:48px;margin-bottom:12px}
 .empty p{font-size:12px;letter-spacing:2px}
 
+/* STATUS PAGE */
+.status-group-block{background:var(--bg2);border:1px solid var(--border);margin-bottom:12px;overflow:hidden}
+.status-group-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none;transition:.15s}
+.status-group-header:hover{background:var(--bg3)}
+.status-group-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--text)}
+.status-group-arrow{font-size:14px;color:var(--text2);transition:.3s}
+.status-group-arrow.collapsed{transform:rotate(-90deg)}
+.status-group-body{border-top:1px solid var(--border);padding:16px}
+.status-group-body.hidden{display:none}
+.status-sub-block{margin-bottom:16px}
+.status-sub-block:last-child{margin-bottom:0}
+.status-sub-label{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.owned-label{color:var(--owned)}
+.owning-label{color:var(--owning)}
+.sketchy-label{color:var(--sketchy)}
+.can-label{color:var(--can)}
+.fav-label{color:var(--fav)}
+.dream-label{color:var(--dream)}
+.status-sub-list{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);background:var(--bg)}
+.status-empty{color:var(--text2);font-size:11px;letter-spacing:2px;padding:10px 12px;display:block}
+
+/* STATUS TRICK ROW */
+.st-row{display:flex;flex-direction:column;border-bottom:1px solid var(--border)}
+.st-row:last-child{border-bottom:none}
+.st-row-top{display:flex;align-items:center}
+.st-trick-btn{background:none;border:none;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;letter-spacing:1px;padding:10px 12px;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:.15s;width:100%;flex:1}
+.st-trick-btn:hover{background:var(--bg3)}
+.st-trick-btn .st-name{flex:1}
+.st-trick-btn .st-badge{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;padding:2px 8px;border:1px solid;margin-left:8px}
+.st-trick-btn .st-badge.owned{border-color:var(--owned);color:var(--owned)}
+.st-trick-btn .st-badge.owning{border-color:var(--owning);color:var(--owning)}
+.st-trick-btn .st-badge.sketchy{border-color:var(--sketchy);color:var(--sketchy)}
+.st-trick-btn .st-badge.can{border-color:var(--can);color:var(--can)}
+.st-trick-btn .st-badge.fav{border-color:var(--fav);color:var(--fav)}
+.st-trick-btn .st-badge.dream{border-color:var(--dream);color:var(--dream)}
+.st-trick-btn .st-arrow{font-size:11px;color:var(--text2);margin-left:6px;transition:.2s}
+.st-trick-btn.open .st-arrow{transform:rotate(180deg)}
+
+/* STATUS TRICK PANEL (inline, like screenshot) */
+.st-panel{display:none;background:var(--bg3);padding:10px 12px;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--border)}
+.st-panel.open{display:flex}
+.st-panel .status-badge{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;padding:6px 14px;border:1px solid;cursor:pointer;transition:.15s}
+.st-panel .status-badge.owned{border-color:var(--owned);color:var(--owned)}
+.st-panel .status-badge.owned.active{background:var(--owned);color:#fff}
+.st-panel .status-badge.owning{border-color:var(--owning);color:var(--owning)}
+.st-panel .status-badge.owning.active{background:var(--owning);color:#fff}
+.st-panel .status-badge.sketchy{border-color:var(--sketchy);color:var(--sketchy)}
+.st-panel .status-badge.sketchy.active{background:var(--sketchy);color:#fff}
+.st-panel .practice-btn{background:none;border:1px solid var(--accent3);color:var(--accent3);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;padding:6px 14px;cursor:pointer;transition:.15s}
+.st-panel .practice-btn:hover{background:var(--accent3);color:#000}
+.st-panel .st-can-btn,.st-panel .st-fav-btn,.st-panel .st-dream-btn{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;padding:6px 14px;border:1px solid;cursor:pointer;transition:.15s;background:none}
+.st-panel .st-can-btn{border-color:var(--can);color:var(--can)}
+.st-panel .st-can-btn.active{background:var(--can);color:#000}
+.st-panel .st-fav-btn{border-color:var(--fav);color:var(--fav)}
+.st-panel .st-fav-btn.active{background:var(--fav);color:#000}
+.st-panel .st-dream-btn{border-color:var(--dream);color:var(--dream)}
+.st-panel .st-dream-btn.active{background:var(--dream);color:#000}
+
+/* CUSTOM TRICK FAB */
+#custom-trick-fab{position:fixed;bottom:80px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--accent2);border:none;color:#fff;font-size:28px;line-height:1;cursor:pointer;z-index:200;box-shadow:0 4px 16px rgba(0,0,0,.5);transition:.2s;display:none}
+#custom-trick-fab:hover{transform:scale(1.1);background:var(--accent)}
+#custom-trick-fab.visible{display:block}
+
 @media(max-width:480px){
-  .trick-grid{grid-template-columns:1fr}
-  .cat-tabs{gap:6px}
-  .cat-tab{font-size:11px;padding:6px 10px}
-  .game-btns{grid-template-columns:1fr}
-  #stats-bar{grid-template-columns:repeat(3,1fr)}
-  .stat-num{font-size:28px}
-  .line-cards{gap:8px}
-  .line-trick-card{min-width:100px}
-  .overview-item{flex-direction:column;align-items:flex-start}
+  .status-group-title{font-size:18px}
 }
+
+/* DRAG & DROP REORDER (My Status) */
+.st-row{touch-action:none}
+.st-row.dragging{opacity:.4;background:var(--bg3)}
+.st-row.drag-over{border-top:2px solid var(--accent)}
+.drag-handle{cursor:grab;padding:0 8px 0 0;color:var(--text2);font-size:14px;flex-shrink:0;user-select:none;touch-action:none}
+.drag-handle:active{cursor:grabbing}
+
+/* OVERVIEW REMOVE BTN */
+.overview-remove-btn{background:none;border:1px solid var(--red);color:var(--red);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;flex-shrink:0;padding:0}
+.overview-remove-btn:hover{background:var(--red);color:#fff}
+
 </style>
 </head>
 <body>
@@ -316,7 +383,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <button id="nickname-btn">👤 <span id="nav-nick"></span></button>
   </div>
   <nav id="nav">
-    <button class="nav-btn active" data-tab="tricks">TRICK LIST</button>
+    <button class="nav-btn active" data-tab="status">MY STATUS</button>
+    <button class="nav-btn" data-tab="tricks">TRICK LIST</button>
     <button class="nav-btn" data-tab="lines">LINE GEN</button>
     <button class="nav-btn" data-tab="game">GAME OF SKATE</button>
     <button class="nav-btn" data-tab="profile">PROFILE</button>
@@ -324,7 +392,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </nav>
 
   <!-- TRICK LIST SECTION -->
-  <div id="tricks-section" class="section active">
+  <div id="tricks-section" class="section">
     <div class="sec-title">TRICK LIST</div>
     <div class="sec-sub">SELECT YOUR TRICKS — CAN DO / FAVORITE / DREAM</div>
     <div id="stats-bar">
@@ -464,6 +532,56 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
   </div>
 
+  <!-- MY STATUS SECTION -->
+  <div id="status-section" class="section active">
+    <div class="sec-title">MY STATUS</div>
+    <div class="sec-sub">TRICK STATUS &amp; FAVORITES OVERVIEW</div>
+
+    <!-- FAVORITES GROUP (위) -->
+    <div class="status-group-block">
+      <div class="status-group-header" onclick="toggleStatusGroup('sg-fav')">
+        <span class="status-group-title">⭐ CAN DO / FAVORITE / DREAM</span>
+        <span class="status-group-arrow" id="sg-fav-arrow">▼</span>
+      </div>
+      <div class="status-group-body" id="sg-fav">
+        <div class="status-sub-block">
+          <div class="status-sub-label can-label">✅ CAN DO</div>
+          <div class="status-sub-list" id="status-cando-list"></div>
+        </div>
+        <div class="status-sub-block">
+          <div class="status-sub-label fav-label">⭐ FAVORITE</div>
+          <div class="status-sub-list" id="status-fav-list"></div>
+        </div>
+        <div class="status-sub-block">
+          <div class="status-sub-label dream-label">💭 DREAM</div>
+          <div class="status-sub-list" id="status-dream-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRICK STATUS GROUP (아래) -->
+    <div class="status-group-block">
+      <div class="status-group-header" onclick="toggleStatusGroup('sg-status')">
+        <span class="status-group-title">🏷 TRICK STATUS</span>
+        <span class="status-group-arrow" id="sg-status-arrow">▼</span>
+      </div>
+      <div class="status-group-body" id="sg-status">
+        <div class="status-sub-block">
+          <div class="status-sub-label owned-label">🔥🛹 OWNED</div>
+          <div class="status-sub-list" id="status-owned-list"></div>
+        </div>
+        <div class="status-sub-block">
+          <div class="status-sub-label owning-label">💪 OWNING</div>
+          <div class="status-sub-list" id="status-owning-list"></div>
+        </div>
+        <div class="status-sub-block">
+          <div class="status-sub-label sketchy-label">😅 SKETCHY</div>
+          <div class="status-sub-list" id="status-sketchy-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- LEADERBOARD SECTION -->
   <div id="leaderboard-section" class="section">
     <div class="sec-title">LEADERBOARD</div>
@@ -541,6 +659,48 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
 </div>
 
+<!-- CUSTOM TRICK FAB -->
+<button id="custom-trick-fab" title="커스텀 트릭 추가">＋</button>
+
+<!-- CUSTOM TRICK MODAL -->
+<div class="modal" id="custom-trick-modal">
+  <div class="modal-box" style="max-width:440px">
+    <h3>ADD CUSTOM TRICK</h3>
+    <div style="font-size:10px;letter-spacing:2px;color:var(--text2);margin-bottom:8px">SECTION</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px" id="custom-section-btns">
+      <button class="cat-tab active" data-sec="Regular">REGULAR</button>
+      <button class="cat-tab" data-sec="Nollie">NOLLIE</button>
+      <button class="cat-tab" data-sec="Switch">SWITCH</button>
+      <button class="cat-tab" data-sec="Fakie">FAKIE</button>
+      <button class="cat-tab" data-sec="grind_fs">GRIND FS</button>
+      <button class="cat-tab" data-sec="grind_bs">GRIND BS</button>
+      <button class="cat-tab" data-sec="grab">GRAB &amp; AIR</button>
+      <button class="cat-tab" data-sec="ramp">RAMP</button>
+      <button class="cat-tab" data-sec="misc">MISC</button>
+    </div>
+    <div style="font-size:10px;letter-spacing:2px;color:var(--text2);margin-bottom:8px">TRICK NAME</div>
+    <input id="custom-trick-input" type="text" placeholder="TRICK NAME" maxlength="40" autocomplete="off">
+    <div class="modal-btns">
+      <button class="modal-ok" id="custom-trick-ok">ADD</button>
+      <button class="modal-cancel" id="custom-trick-cancel">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOM TRICK EDIT MODAL -->
+<div class="modal" id="custom-edit-modal">
+  <div class="modal-box" style="max-width:440px">
+    <h3>EDIT CUSTOM TRICK</h3>
+    <div style="font-size:10px;letter-spacing:2px;color:var(--text2);margin-bottom:8px">TRICK NAME</div>
+    <input id="custom-edit-input" type="text" placeholder="TRICK NAME" maxlength="40" autocomplete="off">
+    <div class="modal-btns" style="margin-bottom:10px">
+      <button class="modal-ok" id="custom-edit-save">SAVE</button>
+      <button class="modal-cancel" id="custom-edit-cancel">CANCEL</button>
+    </div>
+    <button id="custom-edit-delete" style="width:100%;border:1px solid var(--red);background:none;color:var(--red);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;padding:10px;cursor:pointer">🗑 DELETE TRICK</button>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div id="toast"></div>
 
@@ -556,7 +716,7 @@ const FLAT_BASE = [
   "캐멀 플립","캐스퍼 플립","데이드림 플립","디 컴플라이","디스코 플립","페더 플립",
   "핑거플립","540 플립","포워드 플립","프론트사이드 플립","프론트사이드 힐플립",
   "프론트 풋 임파서블","가젤 플립","가젤 스핀","게토 버드","진저스냅",
-  "그레이프 플립","핸드스탠드 플립","하드플립","해슬람 플립","힐플립","하프캡",
+  "그레이프 플립","핸드스탠드 플립","하드플립","해슬람 플립","힐플립",
   "호스피탈 플립","일루전 플립","임파서블","인워드 힐플립","지저스 플립",
   "킥백 플립","킥플립","키위 플립","레이저 플립","너드 플립","나이트메어 플립",
   "노 컴플라이","오렌지 플립","올리 노스","올리 사우스","플라즈마 스핀","팝 셔빗",
@@ -582,7 +742,7 @@ function buildTrickName(base, stance) {
   if (stance === 'Fakie' && FAKIE_OVERRIDE[base]) {
     return FAKIE_OVERRIDE[base];
   }
-  const stanceKo = { 'Nollie': '놀리', 'Fakie': '페이키', 'Switch': '스위치' };
+  const stanceKo = { 'Nollie': '널리', 'Fakie': '페이키', 'Switch': '스위치' };
   return stanceKo[stance] + ' ' + base;
 }
 
@@ -592,6 +752,11 @@ function buildFlatTricks() {
   STANCES.forEach(stance => {
     result[stance] = FLAT_BASE.map(base => buildTrickName(base, stance));
   });
+  // Add stance-specific tricks
+  result['Regular'].unshift('알리(Ollie)');
+  result['Nollie'].unshift('널리(Nollie)');
+  result['Switch'].unshift('스위치 알리(Ollie)');
+  result['Fakie'].unshift('페이키 알리(Ollie)');
   return result;
 }
 
@@ -672,7 +837,9 @@ let state = {
   can: {},    // trickName: true
   fav: {},    // trickName: true
   dream: {},  // trickName: true
-  status: {}  // trickName: 'owned'|'owning'|'sketchy'
+  status: {},  // trickName: 'owned'|'owning'|'sketchy'
+  customTricks: {}, // section: [trickName, ...]
+  statusOrder: {}   // listId: [trickName, ...] — My Status 정렬 순서
 };
 
 // ============================================================
@@ -688,8 +855,10 @@ function loadProfileForNickname(nick) {
   if (raw) {
     try {
       const saved = JSON.parse(raw);
-      state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {}, ...saved, nickname: nick };
+      state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {}, customTricks: {}, statusOrder: {}, ...saved, nickname: nick };
       if (!state.status) state.status = {};
+      if (!state.customTricks) state.customTricks = {};
+      if (!state.statusOrder) state.statusOrder = {};
     } catch(e) {
       state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {} };
     }
@@ -706,7 +875,7 @@ function loadProfileForNickname(nick) {
         }
       } catch(e) {}
     }
-    state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {} };
+    state = { nickname: nick, can: {}, fav: {}, dream: {}, status: {}, customTricks: {} };
   }
 }
 
@@ -754,13 +923,17 @@ function getFavTricks(inclGrind) {
 }
 
 // ============================================================
-// SPLASH
+// SPLASH — auto-login if last nickname exists
 // ============================================================
-const lastNick = localStorage.getItem('skate_last_nick');
-if (lastNick) {
-  loadProfileForNickname(lastNick);
-  showApp();
+function initApp() {
+  const lastNick = localStorage.getItem('skate_last_nick');
+  if (lastNick) {
+    loadProfileForNickname(lastNick);
+    showApp();
+  }
 }
+
+document.addEventListener('DOMContentLoaded', initApp);
 
 document.getElementById('splash-btn').addEventListener('click', () => {
   const v = document.getElementById('splash-input').value.trim().toUpperCase();
@@ -779,10 +952,12 @@ function showApp() {
   const app = document.getElementById('app');
   app.classList.add('active');
   document.getElementById('nav-nick').textContent = state.nickname;
+  document.getElementById('custom-trick-fab').classList.add('visible');
   renderTricks('flat');
   updateStats();
   updateProfile();
   updateLeaderboard();
+  updateStatusPage();
 }
 
 // ============================================================
@@ -831,6 +1006,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     document.getElementById(tab + '-section').classList.add('active');
     if (tab === 'profile') updateProfile();
     if (tab === 'leaderboard') updateLeaderboard();
+    if (tab === 'status') updateStatusPage();
   });
 });
 document.getElementById('nickname-btn').addEventListener('click', () => {
@@ -863,10 +1039,10 @@ function renderTricks(cat) {
   } else if (cat === 'flat') {
     renderFlatSection(container);
   } else {
-    const tricks = TRICKS[cat] || [];
     const grid = document.createElement('div');
     grid.className = 'trick-grid';
-    tricks.forEach(t => grid.appendChild(makeTrickCard(t)));
+    (TRICKS[cat] || []).forEach(t => grid.appendChild(makeTrickCard(t)));
+    (state.customTricks[cat] || []).forEach(t => grid.appendChild(makeCustomTrickCard(t, cat)));
     container.appendChild(grid);
   }
 }
@@ -877,11 +1053,12 @@ function renderFlatSection(container) {
     sec.className = 'flat-section';
     const lbl = document.createElement('div');
     lbl.className = 'flat-label';
-    lbl.textContent = '— ' + stance.toUpperCase();
+    lbl.textContent = '— ' + (stance === 'Nollie' ? 'NOLLIE' : stance.toUpperCase());
     sec.appendChild(lbl);
     const grid = document.createElement('div');
     grid.className = 'trick-grid';
     FLAT_TRICKS[stance].forEach(t => grid.appendChild(makeTrickCard(t)));
+    (state.customTricks[stance] || []).forEach(t => grid.appendChild(makeCustomTrickCard(t, stance)));
     sec.appendChild(grid);
     container.appendChild(sec);
   });
@@ -898,6 +1075,7 @@ function renderGrindSection(container) {
     const grid = document.createElement('div');
     grid.className = 'trick-grid';
     TRICKS[sub].forEach(t => grid.appendChild(makeTrickCard(t)));
+    (state.customTricks[sub] || []).forEach(t => grid.appendChild(makeCustomTrickCard(t, sub)));
     sec.appendChild(grid);
     container.appendChild(sec);
   });
@@ -929,6 +1107,7 @@ function makeTrickCard(trick) {
     } else {
       state.can[trick] = true;
       state.dream[trick] = false;
+      if (!state.status[trick]) state.status[trick] = 'sketchy';
     }
     saveCurrentProfile();
     updateCardClass(card, trick);
@@ -948,6 +1127,7 @@ function makeTrickCard(trick) {
   favBtn.disabled = !state.can[trick];
   favBtn.addEventListener('click', () => {
     state.fav[trick] = !state.fav[trick];
+    if (state.fav[trick] && !state.status[trick]) state.status[trick] = 'sketchy';
     saveCurrentProfile();
     updateCardClass(card, trick);
     favBtn.className = 'icon-btn' + (state.fav[trick] ? ' fav-active' : '');
@@ -978,6 +1158,25 @@ function updateCardClass(card, trick) {
   if (state.fav[trick]) card.classList.add('favorite');
   else if (state.can[trick]) card.classList.add('can-do');
   if (state.dream[trick]) card.classList.add('dream-trick');
+}
+
+// Trick List 카드 UI를 state에 맞게 동기화 (다른 페이지에서 state 바꿀 때 호출)
+function syncTrickCard(trick) {
+  const card = document.getElementById('card-' + encodeURIComponent(trick));
+  if (!card) return;
+  updateCardClass(card, trick);
+  const canB = card.querySelector('[title="Can Do"]');
+  const favB = card.querySelector('[title="Favorite"]');
+  const drmB = card.querySelector('[title="Dream Trick"]');
+  if (canB) canB.className = 'icon-btn' + (state.can[trick] ? ' can-active' : '');
+  if (favB) {
+    favB.className = 'icon-btn' + (state.fav[trick] ? ' fav-active' : '');
+    favB.disabled = !state.can[trick];
+  }
+  if (drmB) {
+    drmB.className = 'icon-btn' + (state.dream[trick] ? ' dream-active' : '');
+    drmB.disabled = !!state.can[trick];
+  }
 }
 
 function updateStats() {
@@ -1011,7 +1210,7 @@ function openOverview(type) {
   title.textContent = labels[type];
   title.className = 'overview-title ' + type;
 
-  const tricks = ALL_TRICKS_ALL.filter(t => state[type][t]);
+  const tricks = ALL_TRICKS_ALL_CUSTOM().filter(t => state[type][t]);
   list.innerHTML = '';
 
   if (tricks.length === 0) {
@@ -1030,18 +1229,15 @@ function openOverview(type) {
 
       if (type === 'can' || type === 'fav') {
         // Status badges
+        const statusLabels = { owned: '🔥🛹 OWNED', owning: '💪 OWNING', sketchy: '😅 SKETCHY' };
         ['owned','owning','sketchy'].forEach(s => {
           const badge = document.createElement('button');
           badge.className = 'status-badge ' + s + (state.status[t] === s ? ' active' : '');
-          badge.textContent = s.toUpperCase();
+          badge.textContent = statusLabels[s];
           badge.addEventListener('click', () => {
-            if (state.status[t] === s) {
-              delete state.status[t];
-            } else {
-              state.status[t] = s;
-            }
+            if (state.status[t] === s) return;
+            state.status[t] = s;
             saveCurrentProfile();
-            // Re-render
             openOverview(currentOverviewType);
           });
           badges.appendChild(badge);
@@ -1054,6 +1250,32 @@ function openOverview(type) {
         practiceBtn.addEventListener('click', () => openPractice(t));
         badges.appendChild(practiceBtn);
       }
+
+      if (type === 'dream') {
+        // Dream은 상태 배지 없음 — 빼기만
+      }
+
+      // ── 빼기 버튼 (Can/Fav/Dream 해제, 트릭 자체는 유지) ──
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'overview-remove-btn';
+      removeBtn.title = '목록에서 제거';
+      removeBtn.textContent = '−';
+      removeBtn.addEventListener('click', () => {
+        if (type === 'can') {
+          state.can[t] = false;
+          state.fav[t] = false;
+          delete state.status[t];
+        } else if (type === 'fav') {
+          state.fav[t] = false;
+        } else if (type === 'dream') {
+          state.dream[t] = false;
+        }
+        saveCurrentProfile();
+        updateStats();
+        syncTrickCard(t);
+        openOverview(currentOverviewType);
+      });
+      badges.appendChild(removeBtn);
 
       item.append(nameEl, badges);
       list.appendChild(item);
@@ -1117,7 +1339,7 @@ function handlePracticeAttempt(landed) {
     let newStatus, resultText, resultColor;
     if (lands >= 7) {
       newStatus = 'owned';
-      resultText = 'OWNED! 🔥';
+      resultText = 'OWNED! 🔥🛹';
       resultColor = 'var(--owned)';
     } else if (lands >= 5) {
       newStatus = 'owning';
@@ -1499,6 +1721,440 @@ document.getElementById('import-submit-btn').addEventListener('click', () => {
     toast('INVALID DATA!');
   }
 });
+// ============================================================
+// STATUS PAGE
+// ============================================================
+function toggleStatusGroup(id) {
+  const body = document.getElementById(id);
+  const arrow = document.getElementById(id + '-arrow');
+  body.classList.toggle('hidden');
+  arrow.classList.toggle('collapsed');
+}
+
+// panelMode: 'cando' → ✅CAN / ⭐FAV / 💭DREAM 버튼만
+//            'status' → OWNED / OWNING / SKETCHY / PRACTICE 버튼만
+function renderStatusTrickList(containerId, tricks, panelMode) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  if (!tricks.length) {
+    el.innerHTML = '<span class="status-empty">없음</span>';
+    return;
+  }
+
+  // 저장된 순서 적용
+  const savedOrder = state.statusOrder[containerId];
+  if (savedOrder && savedOrder.length) {
+    const orderMap = new Map(savedOrder.map((t, i) => [t, i]));
+    tricks = [...tricks].sort((a, b) => {
+      const ai = orderMap.has(a) ? orderMap.get(a) : 9999;
+      const bi = orderMap.has(b) ? orderMap.get(b) : 9999;
+      return ai - bi;
+    });
+  }
+
+  // 현재 순서 저장 헬퍼
+  function saveOrder() {
+    if (!state.statusOrder) state.statusOrder = {};
+    state.statusOrder[containerId] = Array.from(el.querySelectorAll('.st-row')).map(r => r.dataset.trick);
+    saveCurrentProfile();
+  }
+
+  tricks.forEach(trickName => {
+    const row = document.createElement('div');
+    row.className = 'st-row';
+    row.dataset.trick = trickName;
+
+    // --- 드래그 핸들 ---
+    const handle = document.createElement('div');
+    handle.className = 'drag-handle';
+    handle.textContent = '⠿';
+    handle.title = '드래그하여 순서 변경';
+
+    // --- Top button ---
+    const btn = document.createElement('button');
+    btn.className = 'st-trick-btn';
+    btn.style.flex = '1';
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'st-name';
+    nameSpan.textContent = trickName;
+
+    const rightSide = document.createElement('span');
+    rightSide.style.cssText = 'display:flex;align-items:center;gap:6px';
+
+    const badge = document.createElement('span');
+    badge.className = 'st-badge';
+
+    function refreshBadge() {
+      const s = state.status[trickName];
+      const f = state.fav[trickName];
+      const c = state.can[trickName];
+      const d = state.dream[trickName];
+      const statusLabels = { owned: '🔥🛹 OWNED', owning: '💪 OWNING', sketchy: '😅 SKETCHY' };
+      badge.className = 'st-badge';
+      if (s)      { badge.className += ' ' + s; badge.textContent = statusLabels[s] || s.toUpperCase(); }
+      else if (f) { badge.className += ' fav';  badge.textContent = 'FAV'; }
+      else if (c) { badge.className += ' can';  badge.textContent = 'CAN'; }
+      else if (d) { badge.className += ' dream';badge.textContent = 'DREAM'; }
+      else        { badge.textContent = ''; }
+    }
+    refreshBadge();
+
+    const arrow = document.createElement('span');
+    arrow.className = 'st-arrow';
+    arrow.textContent = '▾';
+
+    rightSide.append(badge, arrow);
+    btn.append(nameSpan, rightSide);
+
+    // --- Inline panel ---
+    const panel = document.createElement('div');
+    panel.className = 'st-panel';
+
+    if (panelMode === 'status') {
+      const statusLabels = { owned: '🔥🛹 OWNED', owning: '💪 OWNING', sketchy: '😅 SKETCHY' };
+      ['owned','owning','sketchy'].forEach(s => {
+        const sb = document.createElement('button');
+        sb.className = 'status-badge ' + s + (state.status[trickName] === s ? ' active' : '');
+        sb.textContent = statusLabels[s];
+        sb.addEventListener('click', () => {
+          if (state.status[trickName] === s) return;
+          state.status[trickName] = s;
+          saveCurrentProfile();
+          panel.querySelectorAll('.status-badge').forEach(b => b.classList.remove('active'));
+          sb.classList.add('active');
+          refreshBadge();
+          updateStatusPage();
+        });
+        panel.appendChild(sb);
+      });
+
+      const practiceBtn = document.createElement('button');
+      practiceBtn.className = 'practice-btn';
+      practiceBtn.textContent = '▶ PRACTICE';
+      practiceBtn.addEventListener('click', () => openPractice(trickName));
+      panel.appendChild(practiceBtn);
+
+    } else {
+      const canBtn = document.createElement('button');
+      canBtn.className = 'st-can-btn' + (state.can[trickName] ? ' active' : '');
+      canBtn.textContent = '✅ CAN';
+      canBtn.addEventListener('click', () => {
+        if (state.can[trickName]) {
+          state.can[trickName] = false;
+          state.fav[trickName] = false;
+          delete state.status[trickName];
+        } else {
+          state.can[trickName] = true;
+          state.dream[trickName] = false;
+          if (!state.status[trickName]) state.status[trickName] = 'sketchy';
+        }
+        saveCurrentProfile();
+        syncTrickCard(trickName);
+        canBtn.className = 'st-can-btn' + (state.can[trickName] ? ' active' : '');
+        favBtn.className = 'st-fav-btn' + (state.fav[trickName] ? ' active' : '');
+        dreamBtn.className = 'st-dream-btn' + (state.dream[trickName] ? ' active' : '');
+        refreshBadge();
+        updateStats();
+        updateStatusPage();
+      });
+
+      const favBtn = document.createElement('button');
+      favBtn.className = 'st-fav-btn' + (state.fav[trickName] ? ' active' : '');
+      favBtn.textContent = '⭐ FAV';
+      favBtn.addEventListener('click', () => {
+        if (!state.can[trickName]) { toast('CAN DO 먼저 체크하세요!'); return; }
+        state.fav[trickName] = !state.fav[trickName];
+        if (state.fav[trickName] && !state.status[trickName]) state.status[trickName] = 'sketchy';
+        saveCurrentProfile();
+        syncTrickCard(trickName);
+        favBtn.className = 'st-fav-btn' + (state.fav[trickName] ? ' active' : '');
+        refreshBadge();
+        updateStatusPage();
+      });
+
+      const dreamBtn = document.createElement('button');
+      dreamBtn.className = 'st-dream-btn' + (state.dream[trickName] ? ' active' : '');
+      dreamBtn.textContent = '💭 DREAM';
+      dreamBtn.addEventListener('click', () => {
+        if (state.can[trickName]) { toast('이미 CAN DO인 트릭입니다!'); return; }
+        state.dream[trickName] = !state.dream[trickName];
+        saveCurrentProfile();
+        syncTrickCard(trickName);
+        dreamBtn.className = 'st-dream-btn' + (state.dream[trickName] ? ' active' : '');
+        refreshBadge();
+        updateStatusPage();
+      });
+
+      panel.append(canBtn, favBtn, dreamBtn);
+    }
+
+    // Toggle open/close
+    btn.addEventListener('click', () => {
+      const isOpen = panel.classList.contains('open');
+      el.querySelectorAll('.st-panel.open').forEach(p => p.classList.remove('open'));
+      el.querySelectorAll('.st-trick-btn.open').forEach(b => b.classList.remove('open'));
+      if (!isOpen) {
+        panel.classList.add('open');
+        btn.classList.add('open');
+        if (panelMode === 'status') {
+          panel.querySelectorAll('.status-badge').forEach(b => {
+            b.classList.remove('active');
+            const s = b.classList[1];
+            if (s && state.status[trickName] === s) b.classList.add('active');
+          });
+        } else {
+          panel.querySelectorAll('.st-can-btn').forEach(b => {
+            b.className = 'st-can-btn' + (state.can[trickName] ? ' active' : '');
+          });
+          panel.querySelectorAll('.st-fav-btn').forEach(b => {
+            b.className = 'st-fav-btn' + (state.fav[trickName] ? ' active' : '');
+          });
+          panel.querySelectorAll('.st-dream-btn').forEach(b => {
+            b.className = 'st-dream-btn' + (state.dream[trickName] ? ' active' : '');
+          });
+        }
+      }
+    });
+
+    // row 레이아웃: 핸들 + 버튼 + 패널
+    const topRow = document.createElement('div');
+    topRow.className = 'st-row-top';
+    topRow.append(handle, btn);
+    row.append(topRow, panel);
+    el.appendChild(row);
+
+    // ── 드래그&드롭 (마우스) ──
+    handle.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const rows = () => Array.from(el.querySelectorAll('.st-row'));
+      let dragging = row;
+      dragging.classList.add('dragging');
+      let overRow = null;
+
+      const onMove = (e) => {
+        const y = e.clientY;
+        let target = null;
+        rows().forEach(r => {
+          if (r === dragging) return;
+          const rect = r.getBoundingClientRect();
+          if (y >= rect.top && y <= rect.bottom) target = r;
+        });
+        rows().forEach(r => r.classList.remove('drag-over'));
+        if (target) { target.classList.add('drag-over'); overRow = target; }
+        else overRow = null;
+      };
+
+      const onUp = () => {
+        dragging.classList.remove('dragging');
+        rows().forEach(r => r.classList.remove('drag-over'));
+        if (overRow) {
+          const rowsArr = rows();
+          const fromIdx = rowsArr.indexOf(dragging);
+          const toIdx   = rowsArr.indexOf(overRow);
+          if (fromIdx !== toIdx) {
+            if (fromIdx < toIdx) overRow.after(dragging);
+            else overRow.before(dragging);
+            saveOrder();
+          }
+        }
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      };
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+
+    // ── 터치 드래그 ──
+    handle.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      const rows = () => Array.from(el.querySelectorAll('.st-row'));
+      let dragging = row;
+      dragging.classList.add('dragging');
+      let overRow = null;
+
+      const onMove = (e) => {
+        const touch = e.touches[0];
+        const y = touch.clientY;
+        let target = null;
+        rows().forEach(r => {
+          if (r === dragging) return;
+          const rect = r.getBoundingClientRect();
+          if (y >= rect.top && y <= rect.bottom) target = r;
+        });
+        rows().forEach(r => r.classList.remove('drag-over'));
+        if (target) { target.classList.add('drag-over'); overRow = target; }
+        else overRow = null;
+      };
+
+      const onEnd = () => {
+        dragging.classList.remove('dragging');
+        rows().forEach(r => r.classList.remove('drag-over'));
+        if (overRow) {
+          const rowsArr = rows();
+          const fromIdx = rowsArr.indexOf(dragging);
+          const toIdx   = rowsArr.indexOf(overRow);
+          if (fromIdx !== toIdx) {
+            if (fromIdx < toIdx) overRow.after(dragging);
+            else overRow.before(dragging);
+            saveOrder();
+          }
+        }
+        handle.removeEventListener('touchmove', onMove);
+        handle.removeEventListener('touchend', onEnd);
+      };
+
+      handle.addEventListener('touchmove', onMove, { passive: false });
+      handle.addEventListener('touchend', onEnd);
+    }, { passive: false });
+  });
+}
+
+function updateStatusPage() {
+  const allTricks = ALL_TRICKS_ALL_CUSTOM();
+
+  // CAN DO / FAV / DREAM group — panelMode: 'cando'
+  renderStatusTrickList('status-cando-list',  allTricks.filter(t => state.can[t]),            'cando');
+  renderStatusTrickList('status-fav-list',    allTricks.filter(t => state.fav[t]),            'cando');
+  renderStatusTrickList('status-dream-list',  allTricks.filter(t => state.dream[t]),          'cando');
+
+  // TRICK STATUS group — panelMode: 'status'
+  renderStatusTrickList('status-owned-list',  allTricks.filter(t => state.status[t] === 'owned'),  'status');
+  renderStatusTrickList('status-owning-list', allTricks.filter(t => state.status[t] === 'owning'), 'status');
+  renderStatusTrickList('status-sketchy-list',allTricks.filter(t => state.status[t] === 'sketchy'),'status');
+}
+
+function ALL_TRICKS_ALL_CUSTOM() {
+  const customAll = Object.values(state.customTricks || {}).flat();
+  return [...ALL_TRICKS_ALL, ...customAll];
+}
+
+// ============================================================
+// CUSTOM TRICK CARD (with edit/delete icon)
+// ============================================================
+function makeCustomTrickCard(trick, section) {
+  const card = makeTrickCard(trick);
+  // Add custom indicator + edit button
+  const editBtn = document.createElement('button');
+  editBtn.className = 'icon-btn';
+  editBtn.title = '수정/삭제';
+  editBtn.textContent = '✏️';
+  editBtn.style.borderColor = 'var(--accent2)';
+  editBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openCustomEditModal(trick, section);
+  });
+  card.querySelector('.trick-icons').appendChild(editBtn);
+  // Mark card visually as custom
+  const name = card.querySelector('.trick-name');
+  name.style.color = 'var(--accent2)';
+  return card;
+}
+
+// ============================================================
+// CUSTOM TRICK FAB & MODALS
+// ============================================================
+let customTrickSection = 'Regular';
+let editingCustomTrick = { name: '', section: '' };
+
+document.getElementById('custom-trick-fab').addEventListener('click', () => {
+  // Reset section selector to Regular
+  document.querySelectorAll('#custom-section-btns .cat-tab').forEach(b => b.classList.remove('active'));
+  document.querySelector('#custom-section-btns .cat-tab[data-sec="Regular"]').classList.add('active');
+  customTrickSection = 'Regular';
+  document.getElementById('custom-trick-input').value = '';
+  document.getElementById('custom-trick-modal').classList.add('open');
+  setTimeout(() => document.getElementById('custom-trick-input').focus(), 50);
+});
+
+document.querySelectorAll('#custom-section-btns .cat-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#custom-section-btns .cat-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    customTrickSection = btn.dataset.sec;
+  });
+});
+
+document.getElementById('custom-trick-ok').addEventListener('click', () => {
+  const name = document.getElementById('custom-trick-input').value.trim();
+  if (!name) { toast('TRICK NAME을 입력하세요!'); return; }
+  if (!state.customTricks) state.customTricks = {};
+  if (!state.customTricks[customTrickSection]) state.customTricks[customTrickSection] = [];
+  if (state.customTricks[customTrickSection].includes(name)) {
+    toast('이미 존재하는 트릭입니다!'); return;
+  }
+  state.customTricks[customTrickSection].push(name);
+  saveCurrentProfile();
+  document.getElementById('custom-trick-modal').classList.remove('open');
+  renderTricks(currentCat);
+  toast('✅ 커스텀 트릭 추가: ' + name);
+});
+
+document.getElementById('custom-trick-cancel').addEventListener('click', () => {
+  document.getElementById('custom-trick-modal').classList.remove('open');
+});
+
+document.getElementById('custom-trick-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('custom-trick-ok').click();
+});
+
+// EDIT MODAL
+function openCustomEditModal(trickName, section) {
+  editingCustomTrick = { name: trickName, section };
+  document.getElementById('custom-edit-input').value = trickName;
+  document.getElementById('custom-edit-modal').classList.add('open');
+  setTimeout(() => document.getElementById('custom-edit-input').focus(), 50);
+}
+
+document.getElementById('custom-edit-save').addEventListener('click', () => {
+  const newName = document.getElementById('custom-edit-input').value.trim();
+  if (!newName) { toast('이름을 입력하세요!'); return; }
+  const { name: oldName, section } = editingCustomTrick;
+  const arr = state.customTricks[section] || [];
+  const idx = arr.indexOf(oldName);
+  if (idx === -1) { toast('트릭을 찾을 수 없습니다!'); return; }
+  if (newName !== oldName && arr.includes(newName)) {
+    toast('이미 존재하는 트릭 이름입니다!'); return;
+  }
+  arr[idx] = newName;
+  // Update state keys for can/fav/dream/status
+  ['can','fav','dream','status'].forEach(key => {
+    if (state[key][oldName] !== undefined) {
+      state[key][newName] = state[key][oldName];
+      delete state[key][oldName];
+    }
+  });
+  saveCurrentProfile();
+  document.getElementById('custom-edit-modal').classList.remove('open');
+  renderTricks(currentCat);
+  toast('✅ 트릭 수정: ' + newName);
+});
+
+document.getElementById('custom-edit-delete').addEventListener('click', () => {
+  const { name, section } = editingCustomTrick;
+  const arr = state.customTricks[section] || [];
+  const idx = arr.indexOf(name);
+  if (idx === -1) return;
+  arr.splice(idx, 1);
+  // Clean up state
+  ['can','fav','dream','status'].forEach(key => {
+    delete state[key][name];
+  });
+  saveCurrentProfile();
+  document.getElementById('custom-edit-modal').classList.remove('open');
+  renderTricks(currentCat);
+  updateStats();
+  toast('🗑 트릭 삭제: ' + name);
+});
+
+document.getElementById('custom-edit-cancel').addEventListener('click', () => {
+  document.getElementById('custom-edit-modal').classList.remove('open');
+});
+
+document.getElementById('custom-edit-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('custom-edit-save').click();
+});
+
 </script>
-</body>
 </html>
