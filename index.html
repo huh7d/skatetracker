@@ -907,12 +907,23 @@ function pickN(arr, n) {
   return a.slice(0, n);
 }
 function getCanTricks(inclGrind) {
-  const pool = inclGrind ? ALL_TRICKS_ALL : ALL_TRICKS_FLAT;
-  return pool.filter(t => state.can[t]);
+  const allCustom = Object.values(state.customTricks || {}).flat();
+  if (inclGrind) {
+    return [...ALL_TRICKS_ALL, ...allCustom].filter(t => state.can[t]);
+  } else {
+    // Flat Only: only FLAT_TRICKS (all stances) — no grab, ramp, misc
+    const flatOnly = [...ALL_FLAT_TRICKS, ...(state.customTricks['Regular']||[]), ...(state.customTricks['Nollie']||[]), ...(state.customTricks['Fakie']||[]), ...(state.customTricks['Switch']||[])];
+    return flatOnly.filter(t => state.can[t]);
+  }
 }
 function getFavTricks(inclGrind) {
-  const pool = inclGrind ? ALL_TRICKS_ALL : ALL_TRICKS_FLAT;
-  return pool.filter(t => state.fav[t]);
+  const allCustom = Object.values(state.customTricks || {}).flat();
+  if (inclGrind) {
+    return [...ALL_TRICKS_ALL, ...allCustom].filter(t => state.fav[t]);
+  } else {
+    const flatOnly = [...ALL_FLAT_TRICKS, ...(state.customTricks['Regular']||[]), ...(state.customTricks['Nollie']||[]), ...(state.customTricks['Fakie']||[]), ...(state.customTricks['Switch']||[])];
+    return flatOnly.filter(t => state.fav[t]);
+  }
 }
 
 // ============================================================
@@ -1366,6 +1377,8 @@ document.getElementById('pland-btn').addEventListener('click', () => handlePract
 document.getElementById('pbail-btn').addEventListener('click', () => handlePracticeAttempt(false));
 document.getElementById('practice-close').addEventListener('click', () => {
   document.getElementById('practice-modal').classList.remove('open');
+  // Refresh status page
+  updateStatusPage();
   // Refresh overview if open
   const ov = document.getElementById('overview-modal');
   if (ov.classList.contains('open')) openOverview(currentOverviewType);
@@ -1419,7 +1432,8 @@ const LETTERS = ['S', 'K', 'A', 'T', 'E'];
 let gState = {
   players: 1, p1: '', p2: '',
   p1Letters: 0, p2Letters: 0,
-  eHalf: [false, false],
+  eHalf: [false, false],       // 첫 번째 bail 여부 (E 대기 중)
+  eHalfTrick: [null, null],    // E 대기 중인 트릭 이름
   currentPlayer: 0,
   pool: 'can', grind: 'all',
   currentTrick: '', over: false
@@ -1456,6 +1470,7 @@ function startGame() {
   gState.p2 = gState.players === 2 ? (document.getElementById('p2-input').value.trim().toUpperCase() || 'P2') : '';
   gState.p1Letters = 0; gState.p2Letters = 0;
   gState.eHalf = [false, false];
+  gState.eHalfTrick = [null, null];
   gState.currentPlayer = 0;
   gState.over = false;
   gState.trickPool = pool;
@@ -1496,10 +1511,18 @@ function updatePlayerTurn() {
 
 function nextTrick() {
   if (gState.over) return;
+  const pidx = gState.currentPlayer;
+  // E 대기 중이면 같은 트릭 유지
+  if (gState.eHalf[pidx] && gState.eHalfTrick[pidx]) {
+    gState.currentTrick = gState.eHalfTrick[pidx];
+    document.getElementById('current-trick-name').textContent = gState.currentTrick;
+    document.getElementById('e-warning').style.display = 'block';
+    document.getElementById('e-warning').textContent = '⚠ SAME TRICK — ONE MORE BAIL = E (1/2)';
+    return;
+  }
   gState.currentTrick = rand(gState.trickPool);
   document.getElementById('current-trick-name').textContent = gState.currentTrick;
   document.getElementById('e-warning').style.display = 'none';
-  const pidx = gState.currentPlayer;
   const letters = pidx === 0 ? gState.p1Letters : gState.p2Letters;
   if (letters === 4 && gState.eHalf[pidx]) {
     document.getElementById('e-warning').style.display = 'block';
@@ -1510,29 +1533,55 @@ function nextTrick() {
 function handleResult(landed) {
   if (gState.over) return;
   const pidx = gState.currentPlayer;
+  const currentTrick = gState.currentTrick;
+
   if (landed) {
+    // Land → 해당 플레이어의 E 대기 상태 초기화
+    gState.eHalf[pidx] = false;
+    gState.eHalfTrick[pidx] = null;
     if (gState.players === 2) { gState.currentPlayer = 1 - gState.currentPlayer; updatePlayerTurn(); }
     nextTrick(); return;
   }
+
+  // Bail 처리
   const letters = pidx === 0 ? gState.p1Letters : gState.p2Letters;
   const nextLetter = LETTERS[letters];
+
   if (nextLetter === 'E') {
     if (!gState.eHalf[pidx]) {
+      // 첫 번째 bail — E 대기 시작, 같은 트릭을 다시 시도해야 함
       gState.eHalf[pidx] = true;
+      gState.eHalfTrick[pidx] = currentTrick;
       document.getElementById('e-warning').style.display = 'block';
-      document.getElementById('e-warning').textContent = '⚠ ONE MORE BAIL = E (1/2)';
-      renderSkateLetters('p' + (pidx + 1), pidx === 0 ? gState.p1 : gState.p2, letters);
-      if (gState.players === 2) { gState.currentPlayer = 1 - gState.currentPlayer; updatePlayerTurn(); }
-      nextTrick(); return;
+      document.getElementById('e-warning').textContent = '⚠ SAME TRICK AGAIN — ONE MORE BAIL = E (1/2)';
+      // 턴 넘기지 않고 같은 플레이어가 같은 트릭 재시도
+      // (다음 트릭을 뽑지 않음, 현재 트릭 유지)
+      return;
     } else {
-      if (pidx === 0) gState.p1Letters++;
-      else gState.p2Letters++;
-      gState.eHalf[pidx] = false;
+      // 두 번째 bail이고 같은 트릭인지 확인
+      if (gState.eHalfTrick[pidx] === currentTrick) {
+        // 두 번 연속 bail → E 점등
+        if (pidx === 0) gState.p1Letters++;
+        else gState.p2Letters++;
+        gState.eHalf[pidx] = false;
+        gState.eHalfTrick[pidx] = null;
+      } else {
+        // 다른 트릭이면 처음부터 (이론상 발생 안 하지만 안전장치)
+        gState.eHalf[pidx] = true;
+        gState.eHalfTrick[pidx] = currentTrick;
+        document.getElementById('e-warning').style.display = 'block';
+        document.getElementById('e-warning').textContent = '⚠ SAME TRICK AGAIN — ONE MORE BAIL = E (1/2)';
+        return;
+      }
     }
   } else {
     if (pidx === 0) gState.p1Letters++;
     else gState.p2Letters++;
+    // 다른 글자 bail 시 E 대기 초기화
+    gState.eHalf[pidx] = false;
+    gState.eHalfTrick[pidx] = null;
   }
+
   renderSkateLetters('p1', gState.p1, gState.p1Letters);
   if (gState.players === 2) renderSkateLetters('p2', gState.p2, gState.p2Letters);
   const p1done = gState.p1Letters >= 5;
